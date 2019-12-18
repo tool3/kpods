@@ -8,7 +8,9 @@ const banner = require('fs').readFileSync('banner.txt').toString();
 
 yargs.scriptName('kp')
     .command('$0', 'get k8s pods', async (yargs) => await getPods(yargs, banner))
-    .demandOption('env', 'k8s env to get pods')
+    .describe('env', 'k8s env to get pods')
+    .alias('e', 'env')
+    .demandOption(['env'])
     .showHelpOnFail(true)
     .demandCommand(1, '')
     .alias('h', 'help')
