@@ -21,36 +21,40 @@ const getPods = async (yargs, banner) => {
     try {
         const { data } = await axios.get(`${k8s_url}/${suffix}?Authorization=${token}`, { headers: { Authorization: `Bearer ${token}` }, timeout: 3000 });
 
-        spinner.succeed();
+        if (data.pods.length > 0) {
+            spinner.succeed();
+            data.pods.map(service => {
+                const { name, labels: { subsystem }, namespace, creationTimestamp } = service.objectMeta;
+                const { podStatus: { status }, restartCount } = service;
 
-        data.pods.map(service => {
-            const { name, labels: { subsystem }, namespace, creationTimestamp } = service.objectMeta;
-            const { podStatus: { status }, restartCount } = service;
+                if (!services[subsystem]) {
+                    services[subsystem] = [];
+                }
 
-            if (!services[subsystem]) {
-                services[subsystem] = [];
-            }
+                services[subsystem].push({ name, subsystem, status, namespace, creationTimestamp, restartCount, color: colors[status] });
+            });
 
-            services[subsystem].push({ name, subsystem, status, namespace, creationTimestamp, restartCount, color: colors[status] });
-        });
+            Object.keys(services).map(subsystem => {
 
-        Object.keys(services).map(subsystem => {
+                table.push([{ colSpan: 5, content: chalk.bold(subsystem), hAlign: 'center' }],
+                    [{ content: 'name', hAlign: 'center' },
+                    { content: 'status', hAlign: 'center' },
+                    { content: 'env', hAlign: 'center' },
+                    { content: 'created', hAlign: 'center' },
+                    { content: '↩' }])
 
-            table.push([{ colSpan: 5, content: chalk.bold(subsystem), hAlign: 'center' }],
-                [{ content: 'name', hAlign: 'center' },
-                { content: 'status', hAlign: 'center' },
-                { content: 'env', hAlign: 'center' },
-                { content: 'created', hAlign: 'center' },
-                { content: '↩' }])
+                services[subsystem].map(service => {
+                    let metaData = [service.name, service.status, service.namespace, new Date(service.creationTimestamp).toLocaleString(), service.restartCount];
+                    metaData = metaData.map(item => chalk.hex(service.color || '#ff0000')(item));
+                    table.push(metaData);
+                })
+            });
 
-            services[subsystem].map(service => {
-                let metaData = [service.name, service.status, service.namespace, new Date(service.creationTimestamp).toLocaleString(), service.restartCount];
-                metaData = metaData.map(item => chalk.hex(service.color || '#ff0000')(item));
-                table.push(metaData);
-            })
-        });
+            console.log(table.toString());
+        } else {
+            throw `no pods in env ${args.env}`
+        }
 
-        console.log(table.toString());
     } catch (e) {
         spinner.stop();
         const err = e.errno || e;
