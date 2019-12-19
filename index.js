@@ -19,11 +19,11 @@ yargs.scriptName('kp')
         await getLogs(yargs, banner)
     })
     .showHelpOnFail(true)
-    .demandCommand(1, '')
+    .demandCommand()
     .alias('h', 'help')
     .argv
 
-
+// .demandCommand().recommendCommands().strict()
 // yargs
 //     .usage('Usage: $0 <command> [options]')
 //     .command('*', 'Get k8s pods by env', () => getPods())
