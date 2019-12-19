@@ -2,15 +2,22 @@
 
 const yargs = require('yargs');
 const { getPods } = require('./commands/get_pods');
+const { getLogs } = require('./commands/get_logs');
 
 // banner
 const banner = require('fs').readFileSync('banner.txt').toString();
 
 yargs.scriptName('kp')
-    .command('$0', 'get k8s pods', async (yargs) => await getPods(yargs, banner))
-    .describe('env', 'k8s env to get pods')
-    .alias('e', 'env')
-    .demandOption(['env'])
+    .command('*', 'get k8s pods', async (yargs) => {
+        yargs.alias('e', 'env')
+            .demandOption('env')
+        await getPods(yargs, banner);
+    })
+    .command('logs', 'get pod logs', async (yargs) => {
+        yargs.alias('n', 'pod name for logs')
+            .demandOption('name');
+        await getLogs(yargs, banner)
+    })
     .showHelpOnFail(true)
     .demandCommand(1, '')
     .alias('h', 'help')

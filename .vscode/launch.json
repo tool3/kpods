@@ -12,7 +12,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/index.js",
-            "args": ["--env", "blabla"]
+            "args": ["logs", "--env", "qa", "--name", "backoffice-qa-797f45bfff-pblw2"]
         }
     ]
 }

@@ -19,7 +19,7 @@ const getPods = async (yargs, banner) => {
     const spinner = ora('Getting pods').start();
 
     try {
-        const { data } = await axios.get(`${k8s_url}/${suffix}?Authorization=${token}`, { headers: { Authorization: `Bearer ${token}` }, timeout: 3000 });
+        const { data } = await axios.get(`${k8s_url}/${suffix}?Authorization=${token}`, { headers: { Authorization: `Bearer ${token}` } });
 
         if (data.pods.length > 0) {
             spinner.succeed();
