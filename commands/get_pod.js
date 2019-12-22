@@ -47,13 +47,13 @@ const getPod = async (argv, banner) => {
         const cpuAsc = asciichart.plot(cpuData, {
             height: 10, width: 140, padding: 0, format(val) {
                 val = (val).toFixed();
-                return val.length >= 2 ? val : `0${val}`
+                return val.length >= 2 ? chalk.dim(`${[val]}`) : chalk.dim(`[0${val}]`)
             }
         });
         const ramAsc = asciichart.plot(ramData, {
             height: 10, width: 140, padding: 0, format(val) {
                 val = (val / 1000 / 1000).toFixed();
-                return val.length >= 2 ? val : `0${val}`
+                return val.length >= 2 ? chalk.dim(`[${val}]`) : chalk.dim(`[0${val}]`)
             }
         });
 
