@@ -33,7 +33,7 @@ const getPod = async (argv, banner) => {
             [{ content: 'env', hAlign: 'center' }],
             [{ content: 'created', hAlign: 'center' }],
             [{ content: 'restarts', hAlign: 'center' }],
-            [{ content: 'vars', hAlign: 'center' }],
+            [{ content: 'env vars', hAlign: 'center' }],
             [{ content: 'image', hAlign: 'center' }],
             // [{ content: 'CPU (millicores)', hAlign: 'center' }],
             // [{ content: 'RAM (MB)', hAlign: 'center' }]
@@ -60,14 +60,14 @@ const getPod = async (argv, banner) => {
         });
 
         // env 
-        const envVars = env.map(item => `${item.name}: ${item.value}`).join('\n');
+        const envVars = env.map(item => `${chalk.bold(item.name)}: ${item.value}`).join('\n');
 
         let metaData = [subsystem, podPhase, namespace, new Date(creationTimestamp).toLocaleString(), restartCount, "", "", cpuAsc, ramAsc];
         metaData = metaData.map(item => chalk.hex(color || '#ff0000')(item));
         // table.push(metaData);
         table[1].splice(1, 0, subsystem)
-        table[1].push({ content: `${chalk.bold.cyanBright('CPU (millicores)')}\n\n${cpuAsc}`, hAlign: 'center', rowSpan: 7 }, { content: `${chalk.bold('RAM (MB)')}\n\n${ramAsc}`, hAlign: 'center', rowSpan: 7 })
-        table[2].push(podPhase)
+        table[1].push({ content: `${chalk.underline('CPU (millicores)')}\n\n${cpuAsc}`, hAlign: 'center', rowSpan: 7 }, { content: `${chalk.underline('RAM (MB)')}\n\n${ramAsc}`, hAlign: 'center', rowSpan: 7 })
+        table[2].push(chalk.hex(color)(podPhase))
         table[3].push(namespace)
         table[4].push(new Date(creationTimestamp).toLocaleString())
         table[5].push(restartCount)
