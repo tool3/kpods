@@ -2,7 +2,6 @@ const ora = require('ora');
 const axios = require('axios');
 const Table = require('cli-table3');
 const chalk = require('chalk');
-const _ = require('lodash');
 
 const table = new Table({ style: { head: [], border: [] } });
 const services = {};
@@ -10,15 +9,13 @@ const colors = { 'Running': '#77FF8D', 'Error': '#ff0000', 'Creating': '#ffa500'
 
 const getPods = async (argv, banner) => {
     process.stdout.write(`${banner}\n`);
-    const namespace = argv.env || 'qa';
-    const k8s_url = 'https://k8s-ui.saas-dev.zerto.com'
-    const suffix = `api/v1/pod/${namespace}`;
-    const token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJla3MtYWRtaW4tc2Fhcy10b2tlbi1nbW12dCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJla3MtYWRtaW4tc2FhcyIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjM1MjUxYWQzLTE0ZjMtMTFlYS05ZmE5LTEyYzMwZDY3ODAxNyIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDprdWJlLXN5c3RlbTpla3MtYWRtaW4tc2FhcyJ9.biaxbH2lF35HkiwSSUDDcyufIa34mpuV_fKkZ5HNetDpZ82M_Go7LIV4ec9Zrxzv2d2hYNJYEaLFqvQGOd32TfbokbnX7aPoOxywFHzlN7NGLZfdQrSSYLpJ338DVYPLFzqbt5N4X_N3O9-a4VxinhiUEp2OeKBuT9t4WJmeKwtJ88M_4P5uzxl5vO7yGQDG8e-hUJz4Sh0is61K4s1Ih-U12MzCDJFtWB81t69L_rlKPKsH2hosYQK_OLop_3GpSWfGQ1Y7L7jZvg1RdhXv8Vdf_AzaGplWOb0y-hul7nDtJqAi9IQ32i4wyx2CZUQB_EqtBZvfxeS_js9cjqO1aA';
-
-    const spinner = ora('Getting pods').start();
+    const { url, token, env, apiVersion } = argv;
+    const suffix = `${apiVersion}/pod/${env}`;
+    const fullUrl = `${url}/${suffix}?Authorization=${token}`;
+    const spinner = ora(`Getting pods for ${chalk.bold(env)}`).start();
 
     try {
-        const { data } = await axios.get(`${k8s_url}/${suffix}?Authorization=${token}`, { headers: { Authorization: `Bearer ${token}` } });
+        const { data } = await axios.get(fullUrl, { headers: { Authorization: `Bearer ${token}` } });
 
         if (data.pods.length > 0) {
             spinner.succeed();
@@ -51,11 +48,11 @@ const getPods = async (argv, banner) => {
 
             console.log(table.toString());
         } else {
-            throw `no pods in env ${args.env}`
+            throw `no pods info in env ${args.env}`
         }
 
     } catch (e) {
-        spinner.stop();
+        spinner.fail();
         const err = e.errno || e;
         console.error(chalk.redBright(err));
     };
