@@ -24,7 +24,6 @@ yargs
         return await getLogs(argv, banner);
     })
     .option('env', { alias: 'e', type: 'string', default: 'qa', desc: 'env to get pods' })
-    .option('name', { type: 'string', requiresArg: true, desc: 'pod name', required: false })
     .demandCommand(1, '')
     .help()
     .wrap(72)
