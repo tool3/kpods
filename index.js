@@ -18,10 +18,7 @@ yargs
         })
     .command(['get [name]', 'get'], 'Get k8s pods for [env]', {}, async argv => {
         argv.name = argv._[1] || argv.name;
-        if (argv.name) {
-            return await getPod(argv, banner)
-        }
-        return await getPods(argv, banner);
+        return argv.name ? await getPod(argv, banner) : await getPods(argv, banner);
     })
     .command(['logs [name]'], 'Get k8s pods for [name]', { name: { alias: 'n', type: 'string', desc: 'pod name', required: true } }, async argv => {
         return await getLogs(argv, banner);
@@ -32,41 +29,3 @@ yargs
     .help()
     .wrap(72)
     .argv
-
-
-
-// yargs.scriptName('kp')
-//     .command('get', 'get k8s pods', async (yargs) => {
-//         yargs.alias('e', 'env')
-//             .demandOption('env')
-//         await getPods(yargs, banner);
-//     })
-//     .command('logs', 'get pod logs', async (yargs) =>   {   
-//         yargs.alias('n', 'pod name for logs')
-//             .demandOption('name');
-//         await getLogs(yargs, banner)
-//     })
-//     .help()
-//     .showHelpOnFail(true)
-//     .demandCommand(1, '').recommendCommands().strict()
-//     .alias('h', 'help')
-//     .argv
-
-// require('yargs') // eslint-disable-line
-//   .command('get [env]', 'get k8s pods for env', (yargs) => {
-//     yargs
-//       .positional('env', {
-//         describe: 'env to get pods',
-//         default: 'qa'
-//       })
-//   }, async (argv) => {
-//     await getPods(argv, banner);
-//   })
-//   .option('verbose', {
-//     alias: 'v',
-//     type: 'boolean',
-//     description: 'Run with verbose logging'
-//   })
-//   .argv
-
-// .demandCommand().recommendCommands().strict()
