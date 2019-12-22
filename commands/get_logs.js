@@ -3,11 +3,10 @@ const axios = require('axios');
 const ora = require('ora');
 const chalk = require('chalk');
 
-const getLogs = async (yargs, banner) => {
+const getLogs = async (argv, banner) => {
     process.stdout.write(`${banner}\n`);
-    const args = yargs.argv;
-    const namespace = args.env || 'qa';
-    const name = args.name;
+    const namespace = argv.env || 'qa';
+    const name = argv.name;
     const spinner = ora(`Getting pod logs for ${name}`).start();
 
     const k8s_url = 'https://k8s-ui.saas-dev.zerto.com'
