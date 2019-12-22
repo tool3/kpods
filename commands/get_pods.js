@@ -2,10 +2,10 @@ const ora = require('ora');
 const axios = require('axios');
 const Table = require('cli-table3');
 const chalk = require('chalk');
+const { colors } = require('../constants/colors');
 
 const table = new Table({ style: { head: [], border: [] } });
 const services = {};
-const colors = { 'Running': '#77FF8D', 'Error': '#ff0000', 'Creating': '#ffa500' };
 
 const getPods = async (argv, banner) => {
     process.stdout.write(`${banner}\n`);

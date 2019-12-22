@@ -10,7 +10,7 @@
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/index.js",
-      "args": ["get", "hvm-counters-consumer-qa-64677d996b-tr4mr"]
+      "args": ["get", "protected-vms-consumer-qa-7864468589-nbw87"]
     }
   ]
 }
