@@ -6,7 +6,7 @@ const { getPod } = require('./commands/get_pod');
 const { getLogs } = require('./commands/get_logs');
 
 // banner
-const banner = require('fs').readFileSync('banner.txt').toString();
+const banner = require('fs').readFileSync('./banner.txt').toString();
 
 yargs
     .config(
