@@ -47,13 +47,13 @@ const getPod = async (argv, banner) => {
         const cpuAsc = asciichart.plot(cpuData, {
             height: 10, width: 140, padding: 0, format(val) {
                 val = (val).toFixed();
-                return val.length >= 2 ? chalk.dim(`${[val]}`) : chalk.dim(`[0${val}]`)
+                return val.length >= 2 ? chalk.dim(`${val}`) : chalk.dim(`0${val}`)
             }
         });
         const ramAsc = asciichart.plot(ramData, {
             height: 10, width: 140, padding: 0, format(val) {
                 val = (val / 1000 / 1000).toFixed();
-                return val.length >= 2 ? chalk.dim(`[${val}]`) : chalk.dim(`[0${val}]`)
+                return val.length >= 2 ? chalk.dim(`${val}`) : chalk.dim(`0${val}`)
             }
         });
 
@@ -61,7 +61,7 @@ const getPod = async (argv, banner) => {
         const envVars = env.map(item => `${chalk.bold(item.name)}: ${item.value}`).join('\n');
 
         let metaData = [subsystem, podPhase, namespace, new Date(creationTimestamp).toLocaleString(), restartCount, "", "", cpuAsc, ramAsc];
-        metaData = metaData.map(item => chalk.hex(color || '#ff0000')(item));
+        metaData = metaData.map(item => chalk.hex(color)(item));
 
         // table populate
         table[1].splice(1, 0, subsystem)
