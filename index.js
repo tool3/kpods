@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
 const yargs = require('yargs');
+const path = require('path');
 const { getPods } = require('./commands/get_pods');
 const { getPod } = require('./commands/get_pod');
 const { getLogs } = require('./commands/get_logs');
+const { execPod } = require('./commands/exec_pod');
 
 // banner
-const banner = require('fs').readFileSync('./banner.txt').toString();
+const banner = require('fs').readFileSync(path.join(__dirname, './banner.txt')).toString();
 
 yargs
     .config(
@@ -20,8 +22,11 @@ yargs
         argv.name = argv._[1] || argv.name;
         return argv.name ? await getPod(argv, banner) : await getPods(argv, banner);
     })
-    .command(['logs <name>', 'l'], 'Get pod logs', { }, async argv => {
+    .command(['logs <name>', 'l'], 'Get pod logs', {}, async argv => {
         return await getLogs(argv, banner);
+    })
+    .command(['exec <name>', 'x'], 'Exec into pod', {}, async argv => {
+        return await execPod(argv, banner);
     })
     .option('env', { alias: 'e', type: 'string', default: 'qa', desc: 'env to get pods' })
     .demandCommand(1, '')

@@ -2,14 +2,15 @@
   "name": "k8s_cli",
   "version": "1.0.0",
   "description": "",
-  "main": "test.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "bin": {
-    "kp": "./index.js"
+    "kp": "./index.js",
+    "kpods": "./index.js"
   },
   "dependencies": {
     "asciichart": "^1.5.9",
@@ -23,6 +24,7 @@
     "cli-table3": "^0.5.1",
     "lodash": "^4.17.15",
     "ora": "^4.0.3",
+    "sockjs-client": "^1.4.0",
     "sparkly": "^5.0.0",
     "yargs": "^15.0.2"
   }
