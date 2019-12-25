@@ -3,10 +3,13 @@ const axios = require('axios');
 const Table = require('cli-table3');
 const chalk = require('chalk');
 const { colors } = require('../constants/colors');
-const asciichart = require('asciichart');
+const asciiChart = require('chart');
 
 const table = new Table({ style: { head: [], border: [] } });
 
+const generateGraphTimes = (chart, times) => {
+    return `${chart}\n\n   From ${chalk.bold(times[0])} to ${chalk.bold(times[times.length - 1])}`
+}
 
 const getPod = async (argv, banner) => {
     process.stdout.write(`${banner}\n`);
@@ -27,8 +30,8 @@ const getPod = async (argv, banner) => {
 
         // table columes
         table.push([{ colSpan: 4, content: chalk.bold(name), hAlign: 'center' }],
-            [{ content: 'subsystem', hAlign: 'center' }],
-            [{ content: 'status', hAlign: 'center' }],
+            [{ content: 'subsystem', hAlign: 'center' }, { content: 'CPU (millicores)', hAlign: 'center' }, { content: 'RAM (MB)', hAlign: 'center' }],
+            [{ content: 'status', hAlign: 'center' }, { content: '', rowSpan: 8 }, { content: '', rowSpan: 8 }],
             [{ content: 'env', hAlign: 'center' }],
             [{ content: 'created', hAlign: 'center' }],
             [{ content: 'restarts', hAlign: 'center' }],
@@ -42,20 +45,34 @@ const getPod = async (argv, banner) => {
         const cpu = data.metrics[0];
         const ram = data.metrics[1];
 
-        const cpuData = cpu.metricPoints.map(point => point.value);
-        const ramData = ram.metricPoints.map(point => point.value);
+        let cpuMetrics = [], cpuTimeStamps = [];
+        let ramMetrics = [], ramTimeStamps = [];
 
-        const cpuAsc = asciichart.plot(cpuData, {
-            height: 10, width: 150, padding: 0, format(val) {
-                val = (val).toFixed();
-                return val.length >= 2 ? chalk.dim(`${val}`) : chalk.dim(`0${val}`)
-            }
+        cpu.metricPoints.map(point => {
+            cpuMetrics.push(point.value);
+            cpuTimeStamps.push(new Date(point.timestamp).toLocaleTimeString());
         });
-        const ramAsc = asciichart.plot(ramData, {
-            height: 10, width: 150, padding: 0, format(val) {
-                val = (val / 1000 / 1000).toFixed();
-                return val.length >= 2 ? chalk.dim(`${val}`) : chalk.dim(`0${val}`)
-            }
+
+        ram.metricPoints.map(point => {
+            ramMetrics.push((point.value / 1000 / 1000).toFixed());
+            ramTimeStamps.push(new Date(point.timestamp).toLocaleTimeString());
+        });
+
+
+        const cpuChart = asciiChart(cpuMetrics, {
+            width: 35,
+            height: 15,
+            padding: 0,
+            pointChar: chalk.greenBright('█'),
+            negativePointChar: '░'
+        });
+
+        const ramChart = asciiChart(ramMetrics, {
+            width: 35,
+            height: 15,
+            padding: 0,
+            pointChar: chalk.blueBright('█'),
+            negativePointChar: '░'
         });
 
         // env 
@@ -63,8 +80,9 @@ const getPod = async (argv, banner) => {
 
         // table populate
         table[1].splice(1, 0, subsystem)
-        table[1].push({ content: `${chalk.underline('CPU (millicores)')}\n\n${cpuAsc}`, hAlign: 'center', rowSpan: 9 }, { content: `${chalk.underline('RAM (MB)')}\n\n${ramAsc}`, hAlign: 'center', rowSpan: 9 })
-        table[2].push(chalk.hex(color)(podPhase))
+        table[2].splice(1, 0, chalk.hex(color)(podPhase))
+        table[2][2].content = generateGraphTimes(cpuChart, cpuTimeStamps);
+        table[2][3].content = generateGraphTimes(ramChart, ramTimeStamps);
         table[3].push(namespace)
         table[4].push(new Date(creationTimestamp).toLocaleString())
         table[5].push(restartCount)
@@ -74,6 +92,7 @@ const getPod = async (argv, banner) => {
         table[9].push(envVars)
 
         spinner.succeed();
+
         console.log(table.toString());
 
     } catch (e) {

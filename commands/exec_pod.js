@@ -3,18 +3,16 @@ const SockJS = require('sockjs-client');
 
 const execPod = async (argv) => {
     // const url = argv.url;
-    const fullUrl = "https://k8s-ui.saas-dev.zerto.com/api/v1/pod/qa/csp-upgrade-view-qa-69fff655cf-pgxc9/shell/csp-upgrade-view"
+    const fullUrl = "https://k8s-ui.saas-dev.zerto.com/api/v1/pod/qa/backoffice-qa-fbbb866-5gdkn/shell/backoffice-qa"
     const { data } = await axios.get(fullUrl, { headers: { Authorization: `Bearer ${argv.token}` } });
-    const sock = new SockJS(`https://k8s-ui.saas-dev.zerto.com/api/sockjs`);
+    const time = Date.now();
+    const sock = new SockJS(`https://k8s-ui.saas-dev.zerto.com/api/sockjs?${data.id}&t=${time}`); 
 
     sock.onopen = (s) => {
-        console.log('open');    
-        sock.send('ls');
-        if (sock.readyState === SockJS.OPEN) {
-            sock.send("POST", null, 'ls');
-            sock.close()
-        }
-
+        console.log('Connection Opened');
+        const msg = { t: time, id: data.id }
+        const message = JSON.stringify(msg);
+        sock.send(message);
     };
 
     sock.onmessage = (e) => {
@@ -27,6 +25,8 @@ const execPod = async (argv) => {
     sock.onclose = (e) => {
         console.log('closed');
     };
+
+    process.on('SIGINT', () => sock.close());
 };
 
 module.exports = { execPod }
