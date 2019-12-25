@@ -2,13 +2,13 @@ image: mhart/alpine-node
 
 stages:
   - lint
-  - test
-  - docs
+  # - test
+  # - docs
   - package
-  - integrate
-  - patch
-  - release
-  - deploy
+  # - integrate
+  # - patch/
+  # - release
+  # - deploy
 
 before_script:
   - echo "RA_WORKING_DIR=$RA_WORKING_DIR" > ~/.rarc
@@ -51,14 +51,14 @@ pages:
 
 package:
   before_script:
-    - VERSION="$(npm view @zerto/nicli version)"
+    - VERSION="$(npm view kpods version)"
   stage: package
   only:
     - tags
   artifacts:
-    name: "nicli-$VERSION"
+    name: "kpods-$VERSION"
     paths:
-      - zerto-nicli-*.tgz
+      - kpods-*.tgz
   script:
     - npm pack
 
