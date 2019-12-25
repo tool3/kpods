@@ -24,14 +24,14 @@ lint:
   script:
     - npm run lint
 
-test:
-  stage: test
-  coverage: '/^All files\s*\|\s*(\d{1,3}(?:\.\d+)?)/'
-  artifacts:
-    paths:
-      - coverage/
-  script:
-    - npm run coverage
+# test:
+#   stage: test
+#   coverage: '/^All files\s*\|\s*(\d{1,3}(?:\.\d+)?)/'
+#   artifacts:
+#     paths:
+#       - coverage/
+#   script:
+#     - npm run coverage
 
 pages:
   before_script: []
@@ -96,7 +96,7 @@ patch:
       - $CI_COMMIT_MESSAGE =~ /release/
   only:
   - master
-  script:
+  script: 
     - git remote set-url origin http://gitlab-ci-token:$GITLAB_TOKEN@zgitlab/talhayut/kpods.git
     - git checkout master && git pull
     - release-it --ci --no-npm.publish
