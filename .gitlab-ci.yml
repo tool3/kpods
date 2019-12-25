@@ -22,8 +22,6 @@ package:
   before_script:
     - VERSION="$(npm view kpods version)"
   stage: package
-  only:
-    - tags
   artifacts:
     name: "kpods-$VERSION"
     paths:
