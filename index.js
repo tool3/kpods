@@ -8,7 +8,7 @@ const { getLogs } = require('./commands/get_logs');
 const { execPod } = require('./commands/exec_pod');
 
 // banner
-const banner = require('fs').readFileSync(path.join(__dirname, './banner.txt')).toString();
+const banner = require('fs').readFileSync(path.join(__dirname, './banner/banner.txt')).toString();
 
 yargs
     .config(
@@ -22,6 +22,8 @@ yargs
         argv.name = argv._[1] || argv.name;
         return argv.name ? await getPod(argv, banner) : await getPods(argv, banner);
     })
+    .example('$0 get', 'get all pods in env')
+    .example('$0 get [name]', 'get pod specific info')
     .command(['logs <name>', 'l'], 'Get pod logs', {}, async argv => {
         return await getLogs(argv, banner);
     })  
