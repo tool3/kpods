@@ -1,31 +1,29 @@
 {
-  "name": "k8s_cli",
+  "name": "@zerto/kpods",
   "version": "1.0.0",
-  "description": "",
+  "description": "K8s pods cli",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo 'no tests yet'"
   },
-  "author": "",
+  "author": "Tal Hayut",
   "license": "ISC",
   "bin": {
     "kp": "./index.js",
     "kpods": "./index.js"
   },
+  "repository": {
+    "url": "http://zgitlab/talhayut/kpods"
+  },
   "dependencies": {
     "asciichart": "^1.5.9",
     "axios": "^0.19.0",
-    "blessed": "^0.1.81",
-    "blessed-contrib": "^4.8.18",
     "chalk": "^3.0.0",
     "chart": "github:jstrace/chart",
-    "cli-chart": "^0.3.1",
-    "cli-graph": "^3.2.2",
     "cli-table3": "^0.5.1",
     "lodash": "^4.17.15",
     "ora": "^4.0.3",
     "sockjs-client": "^1.4.0",
-    "sparkly": "^5.0.0",
     "yargs": "^15.0.2"
   }
 }
