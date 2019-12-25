@@ -4,7 +4,8 @@
   "description": "K8s pods cli",
   "main": "index.js",
   "scripts": {
-    "test": "echo 'no tests yet'"
+    "test": "echo 'no tests yet'",
+    "lint": "eslint ."
   },
   "author": "Tal Hayut",
   "license": "ISC",

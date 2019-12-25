@@ -19,7 +19,7 @@ const getLogs = async (argv, banner) => {
         })
     } catch (error) {
         spinner.fail();
-        const err = e.errno || e;
+        const err = error.errno || error;
         console.error(chalk.redBright(err));
     }
 

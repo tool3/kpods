@@ -5,7 +5,7 @@ const path = require('path');
 const { getPods } = require('./commands/get_pods');
 const { getPod } = require('./commands/get_pod');
 const { getLogs } = require('./commands/get_logs');
-const { execPod } = require('./commands/exec_pod');
+// const { execPod } = require('./commands/exec_pod');
 
 // banner
 const banner = require('fs').readFileSync(path.join(__dirname, './banner/banner.txt')).toString();

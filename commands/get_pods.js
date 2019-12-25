@@ -48,14 +48,14 @@ const getPods = async (argv, banner) => {
 
             console.log(table.toString());
         } else {
-            throw `no pods info in env ${args.env}`
+            throw `no pods info in env ${argv.env}`
         }
 
     } catch (e) {
         spinner.fail();
         const err = e.errno || e;
         console.error(chalk.redBright(err));
-    };
+    }
 }
 
 module.exports = { getPods }
