@@ -30,6 +30,7 @@ yargs
     //     return await getDeployments(argv, banner);
     // })
     .option('env', { alias: 'e', type: 'string', default: 'qa', desc: 'env to get pods' })
+    .demandOption('url')
     .demandCommand(1, '')
     .help()
     .wrap(72)
