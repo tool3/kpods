@@ -112,7 +112,7 @@ const getPods = async (argv, banner) => {
 
 
         } else {
-            throw `no pods info in env ${argv.env}`
+            throw `No pods info in env ${argv.env}`
         }
 
     } catch (e) {
