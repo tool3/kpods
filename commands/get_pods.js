@@ -73,7 +73,7 @@ const getPods = async (argv, banner) => {
                 width: 38,
                 height: 15,
                 padding: 0,
-                pointChar: chalk.greenBright('█'),
+                pointChar: chalk.hex(colors['Running'])('█'),
                 negativePointChar: '░'
             });
 
@@ -86,23 +86,24 @@ const getPods = async (argv, banner) => {
             });
 
 
-            const pie = new Pie(8, [{ label: 'Running', value: healthStatus.running, color: [119, 255, 141] }], {
+            const pie = new Pie(8, [{ label: chalk.hex(colors['Running'])('Running'), value: healthStatus.running, color: [119, 255, 141] }], {
                 legend: true,
                 no_ansi: false,
                 display_total: true,
+                flat: true,
                 total_label: chalk.bold('Total pods'),
             });
 
             if (healthStatus.failed) {
                 pie.add({
-                    label: "Failed"
-                    , value: healthStatus.failed,
+                    label: chalk.redBright("Failed"),
+                    value: healthStatus.failed,
                     color: [245, 64, 41]
                 });
             } else if (healthStatus.pending) {
                 pie.add({
-                    label: "Pending"
-                    , value: healthStatus.pending,
+                    label: chalk.hex(colors['Pending'])('Pending'),
+                    value: healthStatus.pending,
                     color: [255, 165, 0]
                 });
             }

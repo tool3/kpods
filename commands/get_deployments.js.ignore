@@ -19,21 +19,25 @@ const getDeployments = async (argv, banner) => {
 
         if (deployments.length > 0) {
             spinner.succeed();
-            deployments.map(service => {
-                const { name, labels: { subsystem, chart }, namespace, creationTimestamp } = service.objectMeta;
-                const { podStatus: { status }, restartCount } = service;
+            
 
-                if (!services[subsystem]) {
-                    services[subsystem] = [];
+             deployments.map(deployment => {
+             
+                if(deployments.objectMeta.label) {
+
+                }
+                
+const { name, labels: { subsystem, chart }, namespace, creationTimestamp } = deployments.objectMeta;
+                if (!services[deployment]) {
+                    services[deployment] = [];
                 }
 
-                services[subsystem].push({ name, subsystem, status, namespace, chart, creationTimestamp, restartCount, color: colors[status] });
+                services[deployment].push({ name, subsystem, namespace, chart, creationTimestamp });
             });
 
             Object.keys(services).map(subsystem => {
                 table.push([{ colSpan: 6, content: chalk.bold(subsystem), hAlign: 'center' }],
                     [{ content: 'name', hAlign: 'center' },
-                    { content: 'status', hAlign: 'center' },
                     { content: 'env', hAlign: 'center' },
                     { content: 'chart', hAlign: 'center' },
                     { content: 'created', hAlign: 'center' },
@@ -48,14 +52,14 @@ const getDeployments = async (argv, banner) => {
 
             console.log(table.toString());
         } else {
-            throw `no pods info in env ${args.env}`
+            throw `no pods info in env ${argv.env}`
         }
 
     } catch (e) {
         spinner.fail();
         const err = e.errno || e;
         console.error(chalk.redBright(err));
-    };
+    }
 }
 
 module.exports = { getDeployments }
