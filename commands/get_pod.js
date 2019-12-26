@@ -3,13 +3,9 @@ const axios = require('axios');
 const Table = require('cli-table3');
 const chalk = require('chalk');
 const { colors } = require('../constants/colors');
-const asciiChart = require('chart');
+const { createStatisticsCharts, generateGraphTimes } = require('../utils/utils');
 
 const table = new Table({ style: { head: [], border: [] } });
-
-const generateGraphTimes = (chart, times) => {
-    return `\n${chart}\n\n   From ${chalk.bold(times[0])} to ${chalk.bold(times[times.length - 1])}`
-}
 
 const getPod = async (argv, banner) => {
     process.stdout.write(`${banner}\n`);
@@ -42,38 +38,7 @@ const getPod = async (argv, banner) => {
         )
 
         // metrics
-        const cpu = data.metrics[0];
-        const ram = data.metrics[1];
-
-        let cpuMetrics = [], cpuTimeStamps = [];
-        let ramMetrics = [], ramTimeStamps = [];
-
-        cpu.metricPoints.map(point => {
-            cpuMetrics.push(point.value);
-            cpuTimeStamps.push(new Date(point.timestamp).toLocaleTimeString());
-        });
-
-        ram.metricPoints.map(point => {
-            ramMetrics.push((point.value / 1000 / 1000).toFixed());
-            ramTimeStamps.push(new Date(point.timestamp).toLocaleTimeString());
-        });
-
-
-        const cpuChart = asciiChart(cpuMetrics, {
-            width: 35,
-            height: 15,
-            padding: 0,
-            pointChar: chalk.greenBright('█'),
-            negativePointChar: '░'
-        });
-
-        const ramChart = asciiChart(ramMetrics, {
-            width: 35,
-            height: 15,
-            padding: 0,
-            pointChar: chalk.blueBright('█'),
-            negativePointChar: '░'
-        });
+        const { cpu, ram } = createStatisticsCharts(data.metrics, 35, 15);
 
         // env 
         const envVars = env.map(item => `${chalk.bold(item.name)}: ${item.value}`).join('\n');
@@ -81,8 +46,8 @@ const getPod = async (argv, banner) => {
         // table populate
         table[1].splice(1, 0, subsystem)
         table[2].splice(1, 0, chalk.hex(color)(podPhase))
-        table[2][2].content = generateGraphTimes(cpuChart, cpuTimeStamps);
-        table[2][3].content = generateGraphTimes(ramChart, ramTimeStamps);
+        table[2][2].content = generateGraphTimes(cpu.chart, cpu.timestamps);
+        table[2][3].content = generateGraphTimes(ram.chart, ram.timestamps);
         table[3].push(namespace)
         table[4].push(new Date(creationTimestamp).toLocaleString())
         table[5].push(restartCount)

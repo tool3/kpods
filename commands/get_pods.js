@@ -3,8 +3,7 @@ const axios = require('axios');
 const Table = require('cli-table3');
 const chalk = require('chalk');
 const { colors } = require('../constants/colors');
-const Pie = require("cli-pie");
-const asciiChart = require('chart');
+const { createPie, createStatisticsCharts, displayTimeRange } = require('../utils/utils');
 
 const table = new Table({ style: { head: [], border: [] } });
 const services = {};
@@ -42,73 +41,22 @@ const getPods = async (argv, banner) => {
                     { content: '↩', hAlign: 'center' }]
                 )
 
-
-
                 services[subsystem].map(service => {
                     let metaData = [service.name, service.status, service.namespace, service.chart, new Date(service.creationTimestamp).toLocaleString(), service.restartCount];
-                    metaData = metaData.map(item => chalk.hex(service.color || '#ff0000')(item));
+                    metaData = metaData.map(item => chalk.hex(service.color || '#f54029')(item));
                     table.push(metaData);
                 })
             });
 
-            const healthStatus = data.status;
-            const totalCpu = data.cumulativeMetrics[0].dataPoints;
-            const totalRam = data.cumulativeMetrics[1].dataPoints;
+            const healthStatuses = data.status;
+            // charts
+            const { cpu, ram } = createStatisticsCharts(data.cumulativeMetrics, 38, 15);
+            // total pod health pie
+            const pie = createPie(healthStatuses);
 
-            let cpuMetrics = [], cpuTimeStamps = [];
-            let ramMetrics = [], ramTimeStamps = [];
+            table.push([{ colSpan: 6, content: `${chalk.bold('Total Pods Stats')}`, hAlign: 'center' }])
+            table.push([{ content: pie.toString() }, { colSpan: 3, content: `Total CPU (millicores)\n\n${cpu.chart}`, hAlign: 'center' }, { content: `Total RAM (MB) \n\n${ram.chart}`, colSpan: 2, hAlign: 'center' }]);
 
-            totalCpu.map(point => {
-                cpuMetrics.push(point.y);
-                cpuTimeStamps.push(new Date(point.x).toLocaleTimeString());
-            });
-
-            totalRam.map(point => {
-                ramMetrics.push((point.y / 1000 / 1000).toFixed());
-                ramTimeStamps.push(new Date(point.timestamp).toLocaleTimeString());
-            });
-
-
-            const cpuChart = asciiChart(cpuMetrics, {
-                width: 38,
-                height: 15,
-                padding: 0,
-                pointChar: chalk.hex(colors['Running'])('█'),
-                negativePointChar: '░'
-            });
-
-            const ramChart = asciiChart(ramMetrics, {
-                width: 38,
-                height: 15,
-                padding: 0,
-                pointChar: chalk.blueBright('█'),
-                negativePointChar: '░'
-            });
-
-
-            const pie = new Pie(8, [{ label: chalk.hex(colors['Running'])('Running'), value: healthStatus.running, color: [119, 255, 141] }], {
-                legend: true,
-                no_ansi: false,
-                display_total: true,
-                flat: true,
-                total_label: chalk.bold('Total pods'),
-            });
-
-            if (healthStatus.failed) {
-                pie.add({
-                    label: chalk.redBright("Failed"),
-                    value: healthStatus.failed,
-                    color: [245, 64, 41]
-                });
-            } else if (healthStatus.pending) {
-                pie.add({
-                    label: chalk.hex(colors['Pending'])('Pending'),
-                    value: healthStatus.pending,
-                    color: [255, 165, 0]
-                });
-            }
-            table.push([{ colSpan: 6, content: chalk.bold('Total Pods Stats'), hAlign: 'center' }])
-            table.push([{ content: pie.toString() }, { colSpan: 3, content: `Total CPU (millicores) \n\n${cpuChart}`, hAlign: 'center' }, { content: `Total RAM (MB) \n\n${ramChart}`, colSpan: 2, hAlign: 'center' }]);
             console.log(table.toString());
 
 
