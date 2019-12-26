@@ -8,7 +8,7 @@ const asciiChart = require('chart');
 const table = new Table({ style: { head: [], border: [] } });
 
 const generateGraphTimes = (chart, times) => {
-    return `${chart}\n\n   From ${chalk.bold(times[0])} to ${chalk.bold(times[times.length - 1])}`
+    return `\n${chart}\n\n   From ${chalk.bold(times[0])} to ${chalk.bold(times[times.length - 1])}`
 }
 
 const getPod = async (argv, banner) => {
