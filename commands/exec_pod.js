@@ -15,29 +15,29 @@ const sendMessage = (sock, message) => {
 
 const execPod = async (argv, banner) => {
     process.stdout.write(`${banner}\n`);
-    
     const spinner = ora(`Connecting to ${chalk.bold(argv.name)}`).start();
     const fullName = argv.name.split('-');
     const shortName = fullName.splice(0, fullName.length - 3).join('-');
     const fullUrl = `${argv.url}/${argv.apiVersion}/pod/qa/${argv.name}/shell/${shortName}`;
-
     const { data } = await axios.get(fullUrl, { headers: { Authorization: `Bearer ${argv.token}` } });
-
-    const time = Date.now();
-
     sessionId = data.id;
     sock = new SockJS(`https://k8s-ui.saas-dev.zerto.com/api/sockjs?${data.id}`, null, { sessionId: () => data.id });
+    const cursor = `root@${argv.name}:/usr/src/app# `;
+    const time = Date.now();
     spinner.succeed();
+
     sock.onopen = (s) => {
-        const msg = { Op: 'bind', t: time, SessionID: data.id, Data: 'echo hello' };
+        const msg = { Op: 'bind', t: time, SessionID: data.id, Data: '' };
         sendMessage(sock, msg);
     };
 
     sock.onmessage = (e) => {
         const { data } = e;
-        const value = JSON.parse(data);
-        value.Data.includes(argv.name) ? rl.setPrompt(value.Data) : console.log(value.Data);
-        rl.prompt();
+        let value = JSON.parse(data);
+        if (value.Data === cursor) {
+            return rl.prompt();
+        };
+        console.log(`${value.Data}`);
     };
 
     sock.onerror = (e) => {
@@ -62,13 +62,22 @@ const execPod = async (argv, banner) => {
     rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
-        prompt: '$ '
+        prompt: `${cursor} `
     });
-    
+
     rl.on('line', (input) => {
-        const msg = { Op: 'stdin', t: time, SessionID: sessionId, Data: `${input}\n` };
-        sendMessage(sock, msg);
+        if (sock.readyState !== SockJS.OPEN) {
+            console.log('still connceting');
+        }
+        if (sock.readyState === SockJS.OPEN) {
+            const msg = { Op: 'stdin', t: time, SessionID: sessionId, Data: `${input}\n` };
+            sendMessage(sock, msg);
+        }
+        
     });
+
+    rl.prompt();
+
 };
 
 module.exports = { execPod }
