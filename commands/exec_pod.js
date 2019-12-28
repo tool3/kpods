@@ -28,9 +28,9 @@ const execPod = async (argv, banner) => {
     spinner.succeed();
 
     sock.onopen = (s) => {
-        rl.setPrompt(cursor);
         const msg = { Op: 'bind', t: time, SessionID: data.id, Data: '' };
         sendMessage(sock, msg);
+        rl.setPrompt(cursor);
     };
 
     sock.onmessage = (e) => {
@@ -58,7 +58,7 @@ const execPod = async (argv, banner) => {
     rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
-        prompt: ''
+        prompt: chalk.white('🚀  Shell connecting...')
     });
 
     rl.on('SIGINT', () => {
@@ -71,7 +71,7 @@ const execPod = async (argv, banner) => {
 
     rl.on('line', (input) => {
         if (sock.readyState !== SockJS.OPEN) {
-            console.log(chalk.redBright('still connecting'));
+            console.log(chalk.redBright('🔄  Still connecting'));
         }
         if (sock.readyState === SockJS.OPEN) {
             const msg = { Op: 'stdin', t: time, SessionID: sessionId, Data: `${input}\n` };
@@ -79,6 +79,8 @@ const execPod = async (argv, banner) => {
         }
 
     });
+
+    rl.prompt();
 };
 
 module.exports = { execPod }
