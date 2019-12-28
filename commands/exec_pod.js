@@ -27,7 +27,7 @@ const execPod = async (argv, banner) => {
     const time = Date.now();
     spinner.succeed();
 
-    sock.onopen = (s) => {
+    sock.onopen = () => {
         const msg = { Op: 'bind', t: time, SessionID: data.id, Data: '' };
         sendMessage(sock, msg);
         rl.setPrompt(cursor);
@@ -36,10 +36,12 @@ const execPod = async (argv, banner) => {
     sock.onmessage = (e) => {
         const { data } = e;
         let value = JSON.parse(data);
+        
         if (value.Data.includes(cursor)) {
             rl.setPrompt(value.Data.replace(cursor, `${chalk.bold(cursor)}`));
             return rl.prompt();
-        };
+        }
+        
         console.log(`${value.Data}`);
     };
 
@@ -71,7 +73,7 @@ const execPod = async (argv, banner) => {
 
     rl.on('line', (input) => {
         if (sock.readyState !== SockJS.OPEN) {
-            console.log(chalk.redBright('🔄  Still connecting'));
+            console.log(chalk.redBright('🔄  Still connecting...'));
         }
         if (sock.readyState === SockJS.OPEN) {
             const msg = { Op: 'stdin', t: time, SessionID: sessionId, Data: `${input}\n` };
