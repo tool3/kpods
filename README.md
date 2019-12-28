@@ -9,14 +9,16 @@
                                      / / /\ \ \     / / /_____/   
                                     / / /  \ \ \   / / /          
                                    / / /    \ \ \ / / /           
-                                   \/_/      \_\_\\/_/            
+                                   \/_/      \_\_\\/_/
+                                   
                                             k8s pods cli                   
 ```
 # config
 `kp` expects you to have the following environment variables available:   
 - `KP_URL` - the k8s dashboard URL.   
-- `KP_TOKEN` - authorization bearer token (without the word bearer).  
+- `KP_TOKEN` - authorization bearer token.  
 
 # usage
 run `kp` or `kp --help` to see available commands and options.
 
+# 
