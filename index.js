@@ -22,14 +22,14 @@ yargs
         argv.name = argv._[1] || argv.name;
         return argv.name ? await getPod(argv, banner) : await getPods(argv, banner);
     })
-    .example('$0 get', 'get all pods in env')
-    .example('$0 get [name]', 'get pod specific info')
     .command(['logs <name>', 'l'], 'Get pod logs', {}, async argv => {
         return await getLogs(argv, banner);
     })
     .command(['exec <name>'], 'Exec pod', {}, async argv => {
         return await execPod(argv, banner);
     })
+    .example('$0 get', 'get all pods in env')
+    .example('$0 get [name]', 'get pod specific info')
     .option('env', { alias: 'e', type: 'string', default: 'qa', desc: 'env to get pods' })
     .demandCommand(1, '')
     .help()

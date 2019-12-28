@@ -1,7 +1,7 @@
 {
   "name": "kpods",
   "version": "1.0.0",
-  "description": "K8s pods cli",
+  "description": "k8s pods cli",
   "main": "index.js",
   "scripts": {
     "test": "echo 'no tests yet'",
