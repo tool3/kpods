@@ -1,4 +1,4 @@
-name: Node.js Package
+name: kpods
 on:
   push:
     branches:
@@ -6,7 +6,7 @@ on:
     - release/*
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
