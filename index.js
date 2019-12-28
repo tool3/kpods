@@ -27,7 +27,7 @@ yargs
     .command(['logs <name>', 'l'], 'Get pod logs', {}, async argv => {
         return await getLogs(argv, banner);
     })
-    .command(['exec [name]'], 'Exec pod', {}, async argv => {
+    .command(['exec <name>'], 'Exec pod', {}, async argv => {
         return await execPod(argv, banner);
     })
     .option('env', { alias: 'e', type: 'string', default: 'qa', desc: 'env to get pods' })

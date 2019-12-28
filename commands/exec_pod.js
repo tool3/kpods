@@ -15,6 +15,7 @@ const sendMessage = (sock, message) => {
 
 const execPod = async (argv, banner) => {
     process.stdout.write(`${banner}\n`);
+    let cursor = `root@${argv.name}:`;
     const spinner = ora(`Connecting to ${chalk.bold(argv.name)}`).start();
     const fullName = argv.name.split('-');
     const shortName = fullName.splice(0, fullName.length - 3).join('-');
@@ -22,11 +23,12 @@ const execPod = async (argv, banner) => {
     const { data } = await axios.get(fullUrl, { headers: { Authorization: `Bearer ${argv.token}` } });
     sessionId = data.id;
     sock = new SockJS(`https://k8s-ui.saas-dev.zerto.com/api/sockjs?${data.id}`, null, { sessionId: () => data.id });
-    const cursor = `root@${argv.name}:/usr/src/app# `;
+
     const time = Date.now();
     spinner.succeed();
 
     sock.onopen = (s) => {
+        rl.setPrompt(cursor);
         const msg = { Op: 'bind', t: time, SessionID: data.id, Data: '' };
         sendMessage(sock, msg);
     };
@@ -34,7 +36,8 @@ const execPod = async (argv, banner) => {
     sock.onmessage = (e) => {
         const { data } = e;
         let value = JSON.parse(data);
-        if (value.Data === cursor) {
+        if (value.Data.includes(cursor)) {
+            rl.setPrompt(value.Data.replace(cursor, `${chalk.bold(cursor)}`));
             return rl.prompt();
         };
         console.log(`${value.Data}`);
@@ -49,35 +52,33 @@ const execPod = async (argv, banner) => {
         const msg = { Op: 'stdin', SessionID: sessionId, Data: END_OF_TRANSMISSION };
         sendMessage(sock, msg)
         sock.close();
+        process.exit(0);
     };
-
-    process.on('SIGINT', () => {
-        sock.close();
-    });
-
-    process.on('SIGQUIT', () => {
-        sock.close();
-    });
 
     rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
-        prompt: `${cursor} `
+        prompt: ''
+    });
+
+    rl.on('SIGINT', () => {
+        sock.close();
+    });
+
+    rl.on('SIGQUIT', () => {
+        sock.close();
     });
 
     rl.on('line', (input) => {
         if (sock.readyState !== SockJS.OPEN) {
-            console.log('still connceting');
+            console.log(chalk.redBright('still connecting'));
         }
         if (sock.readyState === SockJS.OPEN) {
             const msg = { Op: 'stdin', t: time, SessionID: sessionId, Data: `${input}\n` };
             sendMessage(sock, msg);
         }
-        
+
     });
-
-    rl.prompt();
-
 };
 
 module.exports = { execPod }
