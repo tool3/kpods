@@ -10,12 +10,8 @@
                                     / / /  \ \ \   / / /          
                                    / / /    \ \ \ / / /           
                                    \/_/      \_\_\\/_/            
-                                                       
+                                            k8s pods cli                   
 ```
-
-# kpods
-k8s pod cli
-
 # config
 `kp` expects you to have the following environment variables available:   
 - `KP_URL` - the k8s dashboard URL.   
