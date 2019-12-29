@@ -1,4 +1,4 @@
-name: kpods_publish
+name: release
 
 on:
   push:

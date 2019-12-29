@@ -8,13 +8,13 @@
     "lint": "eslint ."
   },
   "author": "Tal Hayut",
-  "license": "ISC",
+  "license": "MIT",
   "bin": {
     "kp": "./index.js",
     "kpods": "./index.js"
   },
   "repository": {
-    "url": "http://zgitlab/talhayut/kpods"
+    "url": "https://github.com/tool3/kpods"
   },
   "dependencies": {
     "@kubernetes/client-node": "^0.11.0",
