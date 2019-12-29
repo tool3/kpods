@@ -1,5 +1,5 @@
 {
-  "name": "@tool3/kpods",
+  "name": "kpods",
   "version": "1.0.0",
   "description": "k8s pods cli",
   "main": "index.js",
