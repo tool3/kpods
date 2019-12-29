@@ -8,17 +8,12 @@ on:
 jobs:
   patch:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GP_TOKEN }}
     steps:
-    - uses: actions/checkout@master
-    - uses: actions/setup-node@v1
-    - name: Bump version and push tag
-      uses: anothrNick/github-tag-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GP_TOKEN }}
-        WITH_V: true
-        RELEASE_BRANCHES: 'release'
-        DEFAULT_BUMP: 'patch'
-        REPO_OWNER: 'tool3'
+      - uses: rymndhng/release-on-push-action@master
+        with:
+          strategy: patch
     
   pack:
     needs: patch
@@ -29,7 +24,7 @@ jobs:
     - run: npm pack
 
   publish-npm:
-    needs: patch
+    needs: pack
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -44,7 +39,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
   publish-gpr:
-    needs: patch
+    needs: pack
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
