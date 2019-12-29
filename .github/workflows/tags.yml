@@ -1,0 +1,53 @@
+on:
+  push:
+    tags:
+    - "*"
+
+jobs:
+  version_tag:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-node@v1
+    - name: update package.json
+      run: |
+        npm version --no-commit-hooks --no-git-tag-version patch
+    - name: commit
+      run: |
+        git config --local user.email "monkey@github.com"
+        git config --local user.name "Code Monkey"
+        git commit -m "post patch version update" -a
+    - name: push
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GP_TOKEN }}
+
+  publish-npm:
+    needs: version_tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+          scope: '@tool3'
+      - run: npm ci
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+  publish-gpr:
+    needs: version_tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://npm.pkg.github.com/
+          scope: '@tool3'
+    - run: npm ci
+    - run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.GP_TOKEN}}
