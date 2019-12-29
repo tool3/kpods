@@ -8,12 +8,16 @@ on:
 jobs:
   patch:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GP_TOKEN }}
     steps:
-      - uses: rymndhng/release-on-push-action@master
-        with:
-          strategy: patch
+    - uses: actions/checkout@master
+    - name: Bump version and push tag
+      uses: anothrNick/github-tag-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GP_TOKEN }}
+        WITH_V: true
+        RELEASE_BRANCHES: release
+        DEFAULT_BUMP: 'patch'
+        REPO_OWNER: 'tool3'
     
   pack:
     needs: patch
