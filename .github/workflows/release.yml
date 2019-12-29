@@ -17,7 +17,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GP_TOKEN }}
         WITH_V: true
         RELEASE_BRANCHES: 'release'
-        DEFAULT_BUMP: '#patch'
+        DEFAULT_BUMP: 'patch'
     
   pack:
     runs-on: ubuntu-latest
