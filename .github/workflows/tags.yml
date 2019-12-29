@@ -11,10 +11,11 @@ jobs:
     - uses: actions/setup-node@v1
     - name: update package.json
       run: |
+        git pull origin master --tags
         npm version --no-commit-hooks --no-git-tag-version patch
     - name: commit
       run: |
-        git config --local user.email "monkey@github.com"
+        git config --local user.email "monkey@githab.com"
         git config --local user.name "Code Monkey"
         git commit -m "post patch version update" -a
     - name: push
