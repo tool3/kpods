@@ -8,18 +8,15 @@ on:
 jobs:
   patch:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-    - uses: actions/checkout@master
-    - uses: actions/setup-node@v1
-    - name: Bump version and push tag
-      uses: anothrNick/github-tag-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GP_TOKEN }}
-        WITH_V: true
-        RELEASE_BRANCHES: 'release'
-        DEFAULT_BUMP: 'patch'
+      - uses: rymndhng/release-on-push-action@master
+        with:
+          strategy: patch
     
   pack:
+    needs: patch
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
