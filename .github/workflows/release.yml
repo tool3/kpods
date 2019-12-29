@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-          registry-url: https://registry.npmjs.org/:_authToken=${NPM_TOKEN}
+          registry-url: https://registry.npmjs.org/
       - run: npm ci
       - run: npm publish
         env:
@@ -38,9 +38,9 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-          registry-url: https://npm.pkg.github.com/:_authToken=${GP_TOKEN}
+          registry-url: https://npm.pkg.github.com/
           scope: '@tool3'
       - run: npm ci
       - run: npm publish
         env:
-          GP_TOKEN: ${{secrets.GP_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.GP_TOKEN}}
