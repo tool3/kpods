@@ -18,7 +18,9 @@ const createPie = (healthStatuses) => {
             value: healthStatuses.failed,
             color: [245, 64, 41]
         });
-    } else if (healthStatuses.pending) {
+    }
+
+    if (healthStatuses.pending) {
         pie.add({
             label: chalk.hex(colors['Pending'])('Pending'),
             value: healthStatuses.pending,
@@ -64,7 +66,7 @@ const createStatisticsCharts = (cumulativeMetrics, width, height) => {
     });
 
     return {
-        ram: { chart: ramTimeStamps.length > 0 ? ramChart : "N/A", timestamps: ramTimeStamps }, cpu: { chart: cpuTimeStamps.length > 0 ? cpuChart: "N/A", timestamps: cpuTimeStamps }
+        ram: { chart: ramTimeStamps.length > 0 ? ramChart : "N/A", timestamps: ramTimeStamps }, cpu: { chart: cpuTimeStamps.length > 0 ? cpuChart : "N/A", timestamps: cpuTimeStamps }
     };
 }
 
