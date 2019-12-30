@@ -18,6 +18,8 @@
 - `KP_URL` - the k8s dashboard URL.   
 - `KP_TOKEN` - authorization bearer token.  
 - `KP_ENV` - the default env.
+  
+You can also run with `--url, -u | --env, -e | --token, -t` and provide individual overrides per command.
 
 # usage
 run `kp` or `kp --help` to see available commands and options.
