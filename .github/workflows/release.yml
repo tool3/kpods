@@ -17,6 +17,7 @@ jobs:
         git config --local user.name "code monkey"
         git pull origin master --tags
         npm version --no-commit-hooks patch
+      
     - uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GP_TOKEN }}
@@ -32,6 +33,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
           scope: '@tool3'
       - run: npm ci
+      - run: git pull --tags
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
@@ -47,6 +49,7 @@ jobs:
         registry-url: https://npm.pkg.github.com/
         scope: '@tool3'
     - run: npm ci
+    - run: git pull --tagss
     - run: npm publish
       env:
         NODE_AUTH_TOKEN: ${{secrets.GP_TOKEN}}
