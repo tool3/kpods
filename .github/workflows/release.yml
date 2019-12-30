@@ -33,7 +33,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
           scope: '@tool3'
       - run: npm ci
-      - run: git pull --tags
+      - run: git pull origin master --tags
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
@@ -49,7 +49,7 @@ jobs:
         registry-url: https://npm.pkg.github.com/
         scope: '@tool3'
     - run: npm ci
-    - run: git pull --tagss
+    - run: git pull origin master --tags
     - run: npm publish
       env:
         NODE_AUTH_TOKEN: ${{secrets.GP_TOKEN}}
