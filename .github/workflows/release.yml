@@ -1,9 +1,9 @@
 name: release
 
 on:
-    push:
-      branches:
-      - release
+  push:
+    branches:
+    - release
   
   jobs:
     version_tag:
