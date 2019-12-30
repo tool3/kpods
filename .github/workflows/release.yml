@@ -11,11 +11,11 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - uses: actions/setup-node@v1
-    - uses: ad-m/github-push-action@master
     - name: patch and push
       run: |
         git pull origin master --tags
         npm version --no-commit-hooks patch
+    - uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GP_TOKEN }}
   
