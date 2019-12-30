@@ -13,6 +13,12 @@
     "kp": "./index.js",
     "kpods": "./index.js"
   },
+  "keywords": [
+    "kuberneters",
+    "k8s",
+    "cli",
+    "pods"
+  ],
   "repository": {
     "url": "https://github.com/tool3/kpods"
   },
