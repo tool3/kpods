@@ -13,6 +13,8 @@ jobs:
     - uses: actions/setup-node@v1
     - name: patch and push
       run: |
+        git config --local user.email "monkey@github.com"
+        git config --local user.name "code monkey"
         git pull origin master --tags
         npm version --no-commit-hooks patch
     - uses: ad-m/github-push-action@master
