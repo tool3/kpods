@@ -22,4 +22,4 @@
 You can also run with `--url, -u | --env, -e | --token, -t` and provide individual overrides per command.
 
 # usage
-run `kp` or `kp --help` to see available commands and options.
+run `kp` or `kp --help` to see available commands and options. 
