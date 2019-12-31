@@ -11,7 +11,6 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - uses: tool3/bump@v1
-    - name: patch and push
       with:
         github_token: ${{ secrets.GP_TOKEN }}
   
