@@ -10,15 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - uses: actions/setup-node@v1
+    - uses: tool3/bump@v1
     - name: patch and push
-      run: |
-        git config --local user.email "monkey@github.com"
-        git config --local user.name "code monkey"
-        git pull origin master --tags
-        npm version --no-commit-hooks patch
-      
-    - uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GP_TOKEN }}
   
