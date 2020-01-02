@@ -16,22 +16,23 @@ const getPods = async (argv, banner) => {
     const fullUrl = `${url}/${suffix}?Authorization=${token}`;
     const spinner = ora(`Getting pods in ${chalk.bold(env)}`).start();
 
+    const defaultLabel = argv.label;
+
     try {
         const { data } = await axios.get(fullUrl, { headers: { Authorization: `Bearer ${token}` } });
-
 
         if (data.pods.length > 0) {
             spinner.succeed();
             data.pods.map(service => {
-                const { name, labels: { subsystem, chart }, namespace, creationTimestamp } = service.objectMeta;
+                const { name, labels: { chart }, namespace, creationTimestamp } = service.objectMeta;
+                const groupBy = service.objectMeta.labels[defaultLabel] || "No Label";
                 const { podStatus: { status }, restartCount } = service;
 
-
-                if (!services[subsystem]) {
-                    services[subsystem] = [];
+                if (!services[groupBy]) {
+                    services[groupBy] = [];
                 }
 
-                services[subsystem].push({ name, subsystem, status, namespace, chart, creationTimestamp, restartCount, color: colors[status] });
+                services[groupBy].push({ name, groupBy, status, namespace, chart, creationTimestamp, restartCount, color: colors[status] });
             });
 
             Object.keys(services).map(subsystem => {
