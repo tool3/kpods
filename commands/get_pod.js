@@ -2,6 +2,7 @@ const ora = require('ora');
 const axios = require('axios');
 const Table = require('cli-table3');
 const chalk = require('chalk');
+const moment = require('moment');
 const { colors } = require('../constants/colors');
 const { createStatisticsCharts, generateGraphTimes } = require('../utils/utils');
 
@@ -27,9 +28,10 @@ const getPod = async (argv, banner) => {
         // table columes
         table.push([{ colSpan: 4, content: chalk.bold(name), hAlign: 'center' }],
             [{ content: 'subsystem', hAlign: 'center' }, { content: 'CPU (millicores)', hAlign: 'center' }, { content: 'RAM (MB)', hAlign: 'center' }],
-            [{ content: 'status', hAlign: 'center' }, { content: '', rowSpan: 8 }, { content: '', rowSpan: 8 }],
+            [{ content: 'status', hAlign: 'center' }, { content: '', rowSpan: 9 }, { content: '', rowSpan: 9 }],
             [{ content: 'env', hAlign: 'center' }],
             [{ content: 'created', hAlign: 'center' }],
+            [{ content: 'age', hAlign: 'center' }],
             [{ content: 'restarts', hAlign: 'center' }],
             [{ content: 'image', hAlign: 'center' }],
             [{ content: 'chart', hAlign: 'center' }],
@@ -44,17 +46,18 @@ const getPod = async (argv, banner) => {
         const envVars = env.map(item => `${chalk.bold(item.name)}: ${item.value}`).join('\n');
 
         // table populate
-        table[1].splice(1, 0, subsystem)
-        table[2].splice(1, 0, chalk.hex(color)(podPhase))
+        table[1].splice(1, 0, subsystem);
+        table[2].splice(1, 0, chalk.hex(color)(podPhase));
         table[2][2].content = generateGraphTimes(cpu.chart, cpu.timestamps);
         table[2][3].content = generateGraphTimes(ram.chart, ram.timestamps);
-        table[3].push(namespace)
+        table[3].push(namespace);
         table[4].push(new Date(creationTimestamp).toLocaleString())
-        table[5].push(restartCount)
-        table[6].push(image)
-        table[7].push(chart)
-        table[8].push(podIP)
-        table[9].push(envVars)
+        table[5].push(moment(creationTimestamp).fromNow());
+        table[6].push(restartCount);
+        table[7].push(image);
+        table[8].push(chart);
+        table[9].push(podIP);
+        table[10].push(envVars);
 
         spinner.succeed();
 

@@ -2,6 +2,7 @@ const ora = require('ora');
 const axios = require('axios');
 const Table = require('cli-table3');
 const chalk = require('chalk');
+const moment = require('moment');
 const { colors } = require('../constants/colors');
 const { createPie, createStatisticsCharts } = require('../utils/utils');
 
@@ -18,11 +19,13 @@ const getPods = async (argv, banner) => {
     try {
         const { data } = await axios.get(fullUrl, { headers: { Authorization: `Bearer ${token}` } });
 
+
         if (data.pods.length > 0) {
             spinner.succeed();
             data.pods.map(service => {
                 const { name, labels: { subsystem, chart }, namespace, creationTimestamp } = service.objectMeta;
                 const { podStatus: { status }, restartCount } = service;
+
 
                 if (!services[subsystem]) {
                     services[subsystem] = [];
@@ -32,17 +35,20 @@ const getPods = async (argv, banner) => {
             });
 
             Object.keys(services).map(subsystem => {
-                table.push([{ colSpan: 6, content: chalk.bold(subsystem), hAlign: 'center' }],
+                table.push([{ colSpan: 7, content: chalk.bold(subsystem), hAlign: 'center' }],
                     [{ content: 'name', hAlign: 'center' },
                     { content: 'status', hAlign: 'center' },
                     { content: 'env', hAlign: 'center' },
                     { content: 'chart', hAlign: 'center' },
                     { content: 'created', hAlign: 'center' },
+                    { content: 'age', hAlign: 'center' },
                     { content: '↩', hAlign: 'center' }]
                 )
 
                 services[subsystem].map(service => {
-                    let metaData = [service.name, service.status, service.namespace, service.chart, new Date(service.creationTimestamp).toLocaleString(), service.restartCount];
+                    const age = moment(service.creationTimestamp).fromNow();
+                    const createdAt = new Date(service.creationTimestamp).toLocaleString();
+                    let metaData = [service.name, service.status, service.namespace, service.chart, createdAt, age, service.restartCount];
                     metaData = metaData.map((item, index) => {
                         const coloredItem = chalk.hex(service.color || '#f54029')(item);
                         return index === 0 ? coloredItem : { content: coloredItem, hAlign: 'center' };
@@ -58,11 +64,11 @@ const getPods = async (argv, banner) => {
             // total pod health pie
             const pie = createPie(healthStatuses);
 
-            table.push([{ colSpan: 6, content: `${chalk.bold('Total Pods Stats')}`, hAlign: 'center' }])
+            table.push([{ colSpan: 7, content: `${chalk.bold('Total Pods Stats')}`, hAlign: 'center' }])
             table.push([
                 { content: pie.toString() },
                 { colSpan: 3, content: `Total CPU (millicores)\n\n${cpu.chart}`, hAlign: 'center' },
-                { content: `Total RAM (MB) \n\n${ram.chart}`, colSpan: 2, hAlign: 'center' }]);
+                { colSpan: 3, content: `Total RAM (MB) \n\n${ram.chart}`, hAlign: 'center' }]);
 
             console.log(table.toString());
 
