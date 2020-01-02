@@ -18,7 +18,7 @@ yargs
             token: process.env.KP_TOKEN,
 
         })
-    .command(['get [name]', 'g'], 'Get pods|s', { name: { alias: 'n', type: 'string', desc: 'pod name', positional: true } }, async argv => {
+    .command(['get [name]', 'g'], 'Get pods|s', { name: { alias: 'n', type: 'string', desc: 'pod name', positional: true }, label: { alias: 'l', type: 'string', desc: 'label to group by', default: 'subsystem' } }, async argv => {
         argv.name = argv._[1] || argv.name;
         return argv.name ? await getPod(argv, banner) : await getPods(argv, banner);
     })
