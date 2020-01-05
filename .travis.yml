@@ -1,7 +1,7 @@
 language: node_js
 node_js: 
-- "latest"
 - "stable"
+- 12
 cache:
   directories:
   - "$HOME/.npm"
