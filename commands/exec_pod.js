@@ -4,7 +4,6 @@ const readline = require('readline');
 const ora = require('ora');
 const chalk = require('chalk');
 
-let sessionId = '';
 let sock, rl;
 const END_OF_TRANSMISSION = "\u0004"
 
@@ -19,9 +18,10 @@ const execPod = async (argv, banner) => {
     const spinner = ora(`Connecting to ${chalk.bold(argv.name)}`).start();
     const fullName = argv.name.split('-');
     const shortName = fullName.splice(0, fullName.length - 3).join('-');
+
     const fullUrl = `${argv.url}/${argv.apiVersion}/pod/qa/${argv.name}/shell/${shortName}`;
     const { data } = await axios.get(fullUrl, { headers: { Authorization: `Bearer ${argv.token}` } });
-    sessionId = data.id;
+    const sessionId = data.id;
     sock = new SockJS(`https://k8s-ui.saas-dev.zerto.com/api/sockjs?${data.id}`, null, { sessionId: () => data.id });
 
     const time = Date.now();
