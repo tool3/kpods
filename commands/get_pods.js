@@ -40,7 +40,7 @@ const getPods = async (argv, banner) => {
                 table.push([{ colSpan: 7, content: chalk.bold(groupBy), hAlign: 'center' }],
                     [{ content: 'name', hAlign: 'center' },
                     { content: 'status', hAlign: 'center' },
-                    { content: 'env', hAlign: 'center' },
+                    { content: 'namespace', hAlign: 'center' },
                     { content: 'chart', hAlign: 'center' },
                     { content: 'created', hAlign: 'center' },
                     { content: 'age', hAlign: 'center' },
@@ -73,7 +73,7 @@ const getPods = async (argv, banner) => {
             });
             Object.keys(services).map(groupBy => {
                 groupPie.add({ label: groupBy, value: services[groupBy].length });
-            });
+            }); 
             table.push([{ colSpan: 7, content: `${chalk.bold('Total Pods Stats')}`, hAlign: 'center' }])
             table.push([
                 { content: `${pie.toString()}\n${groupPie.toString()}` },
