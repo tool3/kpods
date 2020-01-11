@@ -29,7 +29,7 @@ const getPod = async (argv, banner) => {
         table.push([{ colSpan: 4, content: chalk.bold(name), hAlign: 'center' }],
             [{ content: 'subsystem', hAlign: 'center' }, { content: 'CPU (millicores)', hAlign: 'center' }, { content: 'RAM (MB)', hAlign: 'center' }],
             [{ content: 'status', hAlign: 'center' }, { content: '', rowSpan: 9, vAlign: 'center', hAlign: 'center' }, { content: '', rowSpan: 9, vAlign: 'center', hAlign: 'center' }],
-            [{ content: 'env', hAlign: 'center' }],
+            [{ content: 'namespace', hAlign: 'center' }],
             [{ content: 'created', hAlign: 'center' }],
             [{ content: 'age', hAlign: 'center' }],
             [{ content: 'restarts', hAlign: 'center' }],
