@@ -3,6 +3,7 @@ const axios = require('axios');
 const Table = require('cli-table3');
 const chalk = require('chalk');
 const moment = require('moment');
+const Pie = require('cli-pie');
 const { colors } = require('../constants/colors');
 const { createPie, createStatisticsCharts } = require('../utils/utils');
 
@@ -35,8 +36,8 @@ const getPods = async (argv, banner) => {
                 services[groupBy].push({ name, groupBy, status, namespace, chart, creationTimestamp, restartCount, color: colors[status] });
             });
 
-            Object.keys(services).map(subsystem => {
-                table.push([{ colSpan: 7, content: chalk.bold(subsystem), hAlign: 'center' }],
+            Object.keys(services).map(groupBy => {
+                table.push([{ colSpan: 7, content: chalk.bold(groupBy), hAlign: 'center' }],
                     [{ content: 'name', hAlign: 'center' },
                     { content: 'status', hAlign: 'center' },
                     { content: 'env', hAlign: 'center' },
@@ -46,7 +47,7 @@ const getPods = async (argv, banner) => {
                     { content: '↩', hAlign: 'center' }]
                 )
 
-                services[subsystem].map(service => {
+                services[groupBy].map(service => {
                     const age = moment(service.creationTimestamp).fromNow();
                     const createdAt = new Date(service.creationTimestamp).toLocaleString();
                     let metaData = [service.name, service.status, service.namespace, service.chart, createdAt, age, service.restartCount];
@@ -61,15 +62,23 @@ const getPods = async (argv, banner) => {
 
             const healthStatuses = data.status;
             // charts
-            const { cpu, ram } = createStatisticsCharts(data.cumulativeMetrics, 38, 15);
+            const { cpu, ram } = createStatisticsCharts(data.cumulativeMetrics, 38, 25);
             // total pod health pie
-            const pie = createPie(healthStatuses);
 
+            const pie = createPie(healthStatuses);
+            const groupPie = new Pie(5, [], {
+                legend: true,
+                no_ansi: false,
+                flat: true,
+            });
+            Object.keys(services).map(groupBy => {
+                groupPie.add({ label: groupBy, value: services[groupBy].length });
+            });
             table.push([{ colSpan: 7, content: `${chalk.bold('Total Pods Stats')}`, hAlign: 'center' }])
             table.push([
-                { content: pie.toString() },
-                { colSpan: 3, content: `Total CPU (millicores)\n\n${cpu.chart}`, hAlign: 'center' },
-                { colSpan: 3, content: `Total RAM (MB) \n\n${ram.chart}`, hAlign: 'center' }]);
+                { content: `${pie.toString()}\n${groupPie.toString()}` },
+                { colSpan: 3, content: `Total CPU (millicores)\n\n${cpu.chart}`, hAlign: 'center', vAlign: 'center' },
+                { colSpan: 3, content: `Total RAM (MB) \n\n${ram.chart}`, hAlign: 'center', vAlign: 'center' }]);
 
             console.log(table.toString());
 

@@ -4,6 +4,7 @@ const asciiChart = require("chart");
 const { colors } = require('../constants/colors');
 
 const createPie = (healthStatuses) => {
+    
     const pie = new Pie(8, [{ label: chalk.hex(colors['Running'])('Running'), value: healthStatuses.running, color: [119, 255, 141] }], {
         legend: true,
         no_ansi: false,
