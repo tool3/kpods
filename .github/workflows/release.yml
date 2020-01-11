@@ -3,17 +3,17 @@ name: release
 on:
   push:
     branches:
-    - release
-  
+      - release
+
 jobs:
   version_tag:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - uses: tool3/bump@v1
-      with:
-        github_token: ${{ secrets.GP_TOKEN }}
-  
+      - uses: actions/checkout@master
+      - uses: tool3/bump@v1
+        with:
+          github_token: ${{ secrets.GP_TOKEN }}
+
   publish-npm:
     needs: version_tag
     runs-on: ubuntu-latest
@@ -23,25 +23,25 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-          scope: '@tool3'
+          scope: "@tool3"
       - run: npm ci
       - run: git pull origin master --tags
-      - run: npm publish --access public
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-  
+
   publish-gpr:
     needs: version_tag
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-node@v1
-      with:
-        node-version: 12
-        registry-url: https://npm.pkg.github.com/
-        scope: '@tool3'
-    - run: npm ci
-    - run: git pull origin master --tags
-    - run: npm publish
-      env:
-        NODE_AUTH_TOKEN: ${{secrets.GP_TOKEN}}
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://npm.pkg.github.com/
+          scope: "@tool3"
+      - run: npm ci
+      - run: git pull origin master --tags
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GP_TOKEN}}
