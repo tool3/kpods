@@ -1,7 +1,9 @@
 language: node_js
 node_js: 
-- "stable"
+- 8
 - 12
+- "stable"
+
 cache:
   directories:
   - "$HOME/.npm"

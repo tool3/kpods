@@ -75,7 +75,7 @@ const generateGraphTimes = (chart, times) => {
 }
 
 const displayTimeRange = (times) => {
-    return `(${times[0]} to ${times[times.length - 1]})`;
+    return times.length > 0  ? `(${times[0]} to ${times[times.length - 1]})` : '';
 }
 
 module.exports = { createPie, createStatisticsCharts, generateGraphTimes, displayTimeRange }
