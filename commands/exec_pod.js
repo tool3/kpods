@@ -38,8 +38,8 @@ const execPod = async (argv, banner) => {
         let value = JSON.parse(data);
         
         if (value.Data.includes(cursor)) {
-            rl.setPrompt(value.Data.replace(cursor, `${chalk.bold(cursor)}`));
-            return rl.prompt();
+            rl.setPrompt(value.Data.replace(cursor, `${chalk.bold(argv.name)}`));
+            return rl.prompt(true);
         }
         
         console.log(`${value.Data}`);
@@ -82,7 +82,7 @@ const execPod = async (argv, banner) => {
 
     });
 
-    rl.prompt();
+    rl.prompt(true);
 };
 
 module.exports = { execPod }
