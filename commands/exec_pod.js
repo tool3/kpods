@@ -1,10 +1,10 @@
-const axios = require('axios');
 const SockJS = require('sockjs-client');
 const readline = require('readline');
 const ora = require('ora');
 const chalk = require('chalk');
+const { getRequest } = require('../utils/requestUtils');
 
-let sock, rl;
+let sock;
 const END_OF_TRANSMISSION = "\u0004"
 
 const sendMessage = (sock, message) => {
@@ -13,35 +13,53 @@ const sendMessage = (sock, message) => {
 }
 
 const execPod = async (argv, banner) => {
+    let cursor = `root@${argv.name}`;
+
+    const rl = readline.createInterface({
+        terminal: true,
+        input: process.stdin,
+        output: process.stdout
+    });
+
     process.stdout.write(`${banner}\n`);
-    let cursor = `root@${argv.name}:`;
-    const spinner = ora(`Connecting to ${chalk.bold(argv.name)}`).start();
+    const spinner = ora({ text: `Connecting to ${chalk.bold(argv.name)}`, discardStdin: false, stream: rl.output }).start();
     const fullName = argv.name.split('-');
     const shortName = fullName.splice(0, fullName.length - 3).join('-');
 
     const fullUrl = `${argv.url}/${argv.apiVersion}/pod/qa/${argv.name}/shell/${shortName}`;
-    const { data } = await axios.get(fullUrl, { headers: { Authorization: `Bearer ${argv.token}` } });
+    const { data } = await getRequest(fullUrl, token);
     const sessionId = data.id;
-    sock = new SockJS(`https://k8s-ui.saas-dev.zerto.com/api/sockjs?${data.id}`, null, { sessionId: () => data.id });
+
+    sock = new SockJS(`${argv.url}/api/sockjs?${data.id}`, null, { sessionId: () => data.id });
 
     const time = Date.now();
-    spinner.succeed();
 
     sock.onopen = () => {
         const msg = { Op: 'bind', t: time, SessionID: data.id, Data: '' };
         sendMessage(sock, msg);
-        rl.setPrompt(cursor);
     };
 
     sock.onmessage = (e) => {
+        if (spinner.isSpinning) {
+            spinner.succeed()
+        }
         const { data } = e;
         let value = JSON.parse(data);
-        
+
+        // set cursor
         if (value.Data.includes(cursor)) {
-            rl.setPrompt(value.Data.replace(cursor, `${chalk.bold(argv.name)}`));
+            const boldName = chalk.bold(argv.name);
+            const cursorMaxLength = 80;
+            let prompt = `${value.Data.replace(argv.name, boldName)}`;
+            if (value.Data.length >= cursorMaxLength) {
+                const currentPath = prompt.split('/').splice(-1);
+                prompt = `${boldName}:../${currentPath}: `;
+                }
+
+            rl.setPrompt(prompt.trim());
             return rl.prompt(true);
         }
-        
+
         console.log(`${value.Data}`);
     };
 
@@ -56,12 +74,6 @@ const execPod = async (argv, banner) => {
         sock.close();
         process.exit(0);
     };
-
-    rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-        prompt: chalk.white('🚀  Shell connecting...')
-    });
 
     rl.on('SIGINT', () => {
         sock.close();
@@ -79,10 +91,7 @@ const execPod = async (argv, banner) => {
             const msg = { Op: 'stdin', t: time, SessionID: sessionId, Data: `${input}\n` };
             sendMessage(sock, msg);
         }
-
     });
-
-    rl.prompt(true);
 };
 
 module.exports = { execPod }

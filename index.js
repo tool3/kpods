@@ -6,6 +6,7 @@ const { getPods } = require('./commands/get_pods');
 const { getPod } = require('./commands/get_pod');
 const { getLogs } = require('./commands/get_logs');
 const { execPod } = require('./commands/exec_pod');
+const { getPodFilter } = require('./commands/get_pod_filter');
 
 // banner
 const banner = require('fs').readFileSync(path.join(__dirname, './banner/banner.txt')).toString();
@@ -18,10 +19,21 @@ yargs
             token: process.env.KP_TOKEN,
 
         })
-    .command(['get [name]', 'g'], 'Get pods|s', { name: { alias: 'n', type: 'string', desc: 'pod name', positional: true }, label: { alias: 'l', type: 'string', desc: 'label to group by', default: 'subsystem' } }, async argv => {
-        argv.name = argv._[1] || argv.name;
-        return argv.name ? await getPod(argv, banner) : await getPods(argv, banner);
-    })
+    .command(['get [name]', 'g'], 'Get pods|s',
+        {
+            name: { alias: 'n', type: 'string', desc: 'pod name', positional: true },
+            label: { alias: 'l', type: 'string', desc: 'label to group by', default: 'subsystem' },
+            filter: { alias: 'f', type: 'string', desc: 'filter'  },
+        }, async argv => {
+            argv.name = argv._[1] || argv.name;
+            if (argv.name) {
+                await getPod(argv, banner)
+            } else if(argv.filter) {
+                await getPodFilter(argv, banner);
+            } else {
+                await getPods(argv, banner)
+            }
+        })
     .command(['logs <name>', 'l'], 'Get pod logs', {}, async argv => {
         return await getLogs(argv, banner);
     })

@@ -1,17 +1,16 @@
-
-const axios = require('axios');
 const ora = require('ora');
 const chalk = require('chalk');
+const { getRequest } = require('../utils/requestUtils');
 
 const getLogs = async (argv, banner) => {
     process.stdout.write(`${banner}\n`);
     const { token, url, env, name, apiVersion } = argv;
     const suffix = `${apiVersion}/log/${env}/${name}`;
-    const fullUrl = `${url}/${suffix}?Authorization=${token}`;
+    const fullUrl = `${url}/${suffix}`;
 
     const spinner = ora(`Getting logs for ${chalk.bold(name)} in ${chalk.bold(env)}`).start();
     try {
-        const { data } = await axios.get(fullUrl, { headers: { Authorization: `Bearer ${token}` } });
+        const { data } = await getRequest(fullUrl, token);
         spinner.succeed();
 
         data.logs.map(log => {

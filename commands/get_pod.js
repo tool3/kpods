@@ -5,6 +5,7 @@ const chalk = require('chalk');
 const moment = require('moment');
 const { colors } = require('../constants/colors');
 const { createStatisticsCharts, generateGraphTimes } = require('../utils/utils');
+const { getRequest } = require('../utils/requestUtils');
 
 const table = new Table({ style: { head: [], border: [] } });
 
@@ -12,11 +13,11 @@ const getPod = async (argv, banner) => {
     process.stdout.write(`${banner}\n`);
     const { token, url, env, name, apiVersion } = argv;
     const suffix = `${apiVersion}/pod/${env}/${name}`;
-    const fullUrl = `${url}/${suffix}?Authorization=${token}`
+    const fullUrl = `${url}/${suffix}`
     const spinner = ora(`Getting pod info for ${chalk.bold(name)} in ${chalk.bold(env)}`).start();
 
     try {
-        const { data } = await axios.get(fullUrl, { headers: { Authorization: `Bearer ${token}` } });
+        const { data } = await getRequest(fullUrl, token);
 
         const subsystem = data.objectMeta.labels.subsystem
         const { name, namespace, creationTimestamp, labels: { chart } } = data.objectMeta;

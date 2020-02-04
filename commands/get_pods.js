@@ -1,11 +1,11 @@
 const ora = require('ora');
-const axios = require('axios');
 const Table = require('cli-table3');
 const chalk = require('chalk');
 const moment = require('moment');
 const Pie = require('cli-pie');
 const { colors } = require('../constants/colors');
 const { createPie, createStatisticsCharts } = require('../utils/utils');
+const { getRequest } = require('../utils/requestUtils');
 
 const table = new Table({ style: { head: [], border: [] } });
 const services = {};
@@ -14,13 +14,13 @@ const getPods = async (argv, banner) => {
     process.stdout.write(`${banner}\n`);
     const { url, token, env, apiVersion } = argv;
     const suffix = `${apiVersion}/pod/${env}`;
-    const fullUrl = `${url}/${suffix}?Authorization=${token}`;
+    const fullUrl = `${url}/${suffix}`;
     const spinner = ora(`Getting pods in ${chalk.bold(env)}`).start();
 
     const defaultLabel = argv.label;
 
     try {
-        const { data } = await axios.get(fullUrl, { headers: { Authorization: `Bearer ${token}` } });
+        const { data } = await getRequest(fullUrl, token);
 
         if (data.pods.length > 0) {
             spinner.succeed();
