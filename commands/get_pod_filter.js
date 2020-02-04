@@ -3,7 +3,7 @@ const Table = require('cli-table3');
 const chalk = require('chalk');
 const moment = require('moment');
 const { colors } = require('../constants/colors');
-const { createStatisticsCharts, generateGraphTimes } = require('../utils/utils');
+const { createStatisticsCharts, generateGraphTimes } = require('../utils/graphUtils');
 const { getRequest } = require('../utils/requestUtils');
 
 let filteredPods = [];

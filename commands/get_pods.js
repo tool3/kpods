@@ -4,11 +4,21 @@ const chalk = require('chalk');
 const moment = require('moment');
 const Pie = require('cli-pie');
 const { colors } = require('../constants/colors');
-const { createPie, createStatisticsCharts } = require('../utils/utils');
+const { createPie, createStatisticsCharts } = require('../utils/graphUtils');
 const { getRequest } = require('../utils/requestUtils');
 
 const table = new Table({ style: { head: [], border: [] } });
 const services = {};
+
+const restartByCount = (restarts, serviceColor) => {
+    if (restarts === 0) {
+        return serviceColor;
+    } else if (restarts < 5) {
+        return colors['Pending'];
+    } else if (restarts > 5) {
+        return colors['Error'];
+    }
+}
 
 const getPods = async (argv, banner) => {
     process.stdout.write(`${banner}\n`);
@@ -50,7 +60,8 @@ const getPods = async (argv, banner) => {
                 services[groupBy].map(service => {
                     const age = moment(service.creationTimestamp).fromNow();
                     const createdAt = new Date(service.creationTimestamp).toLocaleString();
-                    let metaData = [service.name, service.status, service.namespace, service.chart, createdAt, age, service.restartCount];
+                    const restartColor = restartByCount(service.restartCount, service.color);
+                    let metaData = [service.name, service.status, service.namespace, service.chart, createdAt, age, chalk.hex(restartColor)(service.restartCount)];
                     metaData = metaData.map((item, index) => {
                         const coloredItem = chalk.hex(service.color || '#f54029')(item);
                         return index === 0 ? coloredItem : { content: coloredItem, hAlign: 'center' };
@@ -73,7 +84,7 @@ const getPods = async (argv, banner) => {
             });
             Object.keys(services).map(groupBy => {
                 groupPie.add({ label: groupBy, value: services[groupBy].length });
-            }); 
+            });
             table.push([{ colSpan: 7, content: `${chalk.bold('Total Pods Stats')}`, hAlign: 'center' }])
             table.push([
                 { content: `${pie.toString()}\n${groupPie.toString()}` },
