@@ -27,7 +27,7 @@ const execPod = async (argv, banner) => {
     const shortName = fullName.splice(0, fullName.length - 3).join('-');
 
     const fullUrl = `${argv.url}/${argv.apiVersion}/pod/qa/${argv.name}/shell/${shortName}`;
-    const { data } = await getRequest(fullUrl, token);
+    const { data } = await getRequest(fullUrl, argv.token);
     const sessionId = data.id;
 
     sock = new SockJS(`${argv.url}/api/sockjs?${data.id}`, null, { sessionId: () => data.id });

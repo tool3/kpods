@@ -1,5 +1,4 @@
 const ora = require('ora');
-const axios = require('axios');
 const Table = require('cli-table3');
 const chalk = require('chalk');
 const moment = require('moment');
