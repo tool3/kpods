@@ -27,7 +27,7 @@ const getPodFilter = async (argv, banner) => {
         });
 
         spinner.succeed();
-
+        
         await Promise.all(filteredPods.map(async pod => {
             const table = new Table({ style: { head: [], border: [] }, colWidths: [15, 50, 50, 50] });
             const suffix = `${apiVersion}/pod/${argv.env}/${pod.objectMeta.name}`;

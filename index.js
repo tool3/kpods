@@ -43,6 +43,7 @@ yargs
     .example('$0 get', 'get all pods in env')
     .example('$0 get -e dev', 'get pods in dev namespace')
     .example('$0 get [name]', 'get pod specific info')
+    .example('$0 get --filter views', 'get pods specific info filtered by name')
     .option('env', { alias: 'e', type: 'string', default: process.env.KP_ENV || 'KP_ENV', desc: 'env to get pods', required: true })
     .option('url', { alias: 'u', type: 'string', default: 'KP_URL', desc: 'k8s dashboard url', required: true })
     .option('token', { alias: 't', type: 'string', default: 'KP_TOKEN', desc: 'bearer token', required: true })
