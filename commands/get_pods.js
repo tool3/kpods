@@ -39,6 +39,10 @@ const getPods = async (argv, banner) => {
                 const groupBy = service.objectMeta.labels[defaultLabel] || "No Label";
                 const { podStatus: { status }, restartCount } = service;
 
+                if (argv.status && status.toLowerCase() !== argv.status.toLowerCase()) {
+                    return;
+                }
+
                 if (!services[groupBy]) {
                     services[groupBy] = [];
                 }
@@ -46,56 +50,66 @@ const getPods = async (argv, banner) => {
                 services[groupBy].push({ name, groupBy, status, namespace, chart, creationTimestamp, restartCount, color: colors[status] });
             });
 
-            Object.keys(services).map(groupBy => {
-                table.push([{ colSpan: 7, content: chalk.bold(groupBy), hAlign: 'center' }],
-                    [{ content: 'name', hAlign: 'center' },
-                    { content: 'status', hAlign: 'center' },
-                    { content: 'namespace', hAlign: 'center' },
-                    { content: 'chart', hAlign: 'center' },
-                    { content: 'created', hAlign: 'center' },
-                    { content: 'age', hAlign: 'center' },
-                    { content: '↩', hAlign: 'center' }]
-                )
+            const servicesKeys = Object.keys(services);
 
-                services[groupBy].map(service => {
-                    const age = moment(service.creationTimestamp).fromNow();
-                    const createdAt = new Date(service.creationTimestamp).toLocaleString();
-                    const restartColor = restartByCount(service.restartCount, service.color);
-                    let metaData = [service.name, service.status, service.namespace, service.chart, createdAt, age, chalk.hex(restartColor)(service.restartCount)];
-                    metaData = metaData.map((item, index) => {
-                        const coloredItem = chalk.hex(service.color || '#f54029')(item);
-                        return index === 0 ? coloredItem : { content: coloredItem, hAlign: 'center' };
-                    });
+            if (servicesKeys.length > 0) {
+                servicesKeys.map(groupBy => {
+                    table.push([{ colSpan: 7, content: chalk.bold(groupBy), hAlign: 'center' }],
+                        [{ content: 'name', hAlign: 'center' },
+                        { content: 'status', hAlign: 'center' },
+                        { content: 'namespace', hAlign: 'center' },
+                        { content: 'chart', hAlign: 'center' },
+                        { content: 'created', hAlign: 'center' },
+                        { content: 'age', hAlign: 'center' },
+                        { content: '↩', hAlign: 'center' }]
+                    )
 
-                    table.push(metaData);
-                })
-            });
+                    services[groupBy].map(service => {
+                        const age = moment(service.creationTimestamp).fromNow();
+                        const createdAt = new Date(service.creationTimestamp).toLocaleString();
+                        const restartColor = restartByCount(service.restartCount, service.color);
+                        let metaData = [service.name, service.status, service.namespace, service.chart, createdAt, age, chalk.hex(restartColor)(service.restartCount)];
+                        metaData = metaData.map((item, index) => {
+                            const coloredItem = chalk.hex(service.color || '#f54029')(item);
+                            return index === 0 ? coloredItem : { content: coloredItem, hAlign: 'center' };
+                        });
 
-            const healthStatuses = data.status;
-            // charts
-            const { cpu, ram } = createStatisticsCharts(data.cumulativeMetrics, 38, 25);
-            // total pod health pie
+                        table.push(metaData);
+                    })
+                });
 
-            const pie = createPie(healthStatuses);
-            const groupPie = new Pie(5, [], {
-                legend: true,
-                no_ansi: false,
-                flat: true,
-            });
-            Object.keys(services).map(groupBy => {
-                groupPie.add({ label: groupBy, value: services[groupBy].length });
-            });
-            table.push([{ colSpan: 7, content: `${chalk.bold('Total Pods Stats')}`, hAlign: 'center' }])
-            table.push([
-                { content: `${pie.toString()}\n${groupPie.toString()}` },
-                { colSpan: 3, content: `Total CPU (millicores)\n\n${cpu.chart}`, hAlign: 'center', vAlign: 'center' },
-                { colSpan: 3, content: `Total RAM (MB) \n\n${ram.chart}`, hAlign: 'center', vAlign: 'center' }]);
+                const healthStatuses = data.status;
 
-            console.log(table.toString());
+                // charts
+                const { cpu, ram } = createStatisticsCharts(data.cumulativeMetrics, 38, 25);
 
+                // total pod health pie
+                const pie = createPie(healthStatuses);
+                const groupPie = new Pie(5, [], {
+                    legend: true,
+                    no_ansi: false,
+                    flat: true,
+                    display_total: true
+                });
+
+                Object.keys(services).map(groupBy => {
+                    groupPie.add({ label: groupBy, value: services[groupBy].length });
+                });
+                table.push([{ colSpan: 7, content: `${chalk.bold('Total Pods Stats')}`, hAlign: 'center' }])
+                !argv.status ? table.push([
+                    { content: `${pie.toString()}\n${groupPie.toString()}` },
+                    { colSpan: 3, content: `Total CPU (millicores)\n\n${cpu.chart}`, hAlign: 'center', vAlign: 'center' },
+                    { colSpan: 3, content: `Total RAM (MB) \n\n${ram.chart}`, hAlign: 'center', vAlign: 'center' }]) :
+                    table.push([{ content: '', colSpan: 1 }, { content: `${groupPie.toString()}`, colSpan: 4 }]);
+
+                console.log(table.toString());
+
+            } else {
+                throw `No ${argv.status} pods in ${argv.env}`    
+            }
 
         } else {
-            throw `No pods info in env ${argv.env}`
+            throw `No pods info in ${argv.env}`
         }
 
     } catch (e) {
