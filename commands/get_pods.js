@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const moment = require('moment');
 const Pie = require('cli-pie');
 const { colors } = require('../constants/colors');
-const { createPie, createStatisticsCharts } = require('../utils/graphUtils');
+const { createPie, createStatisticsCharts, generateGraphTimes } = require('../utils/graphUtils');
 const { getRequest } = require('../utils/requestUtils');
 
 const table = new Table({ style: { head: [], border: [] } });
@@ -89,7 +89,8 @@ const getPods = async (argv, banner) => {
                     legend: true,
                     no_ansi: false,
                     flat: true,
-                    display_total: true
+                    display_total: !!argv.status,
+                    total_label: chalk.bold('Total pods'),
                 });
 
                 Object.keys(services).map(groupBy => {
@@ -98,9 +99,9 @@ const getPods = async (argv, banner) => {
                 table.push([{ colSpan: 7, content: `${chalk.bold('Total Pods Stats')}`, hAlign: 'center' }])
                 !argv.status ? table.push([
                     { content: `${pie.toString()}\n${groupPie.toString()}` },
-                    { colSpan: 3, content: `Total CPU (millicores)\n\n${cpu.chart}`, hAlign: 'center', vAlign: 'center' },
-                    { colSpan: 3, content: `Total RAM (MB) \n\n${ram.chart}`, hAlign: 'center', vAlign: 'center' }]) :
-                    table.push([{ content: '', colSpan: 1 }, { content: `${groupPie.toString()}`, colSpan: 4 }]);
+                    { colSpan: 3, content: `Total CPU (millicores)\n${generateGraphTimes(cpu.chart, cpu.timestamps)}`, hAlign: 'center', vAlign: 'center' },
+                    { colSpan: 3, content: `Total RAM (MB) \n${generateGraphTimes(ram.chart, ram.timestamps)}`, hAlign: 'center', vAlign: 'center' }]) :
+                    table.push([{ content: '', colSpan: 1 }]);
 
                 console.log(table.toString());
 
