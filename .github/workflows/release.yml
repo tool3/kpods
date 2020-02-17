@@ -40,8 +40,9 @@ jobs:
           node-version: 12
           registry-url: https://npm.pkg.github.com/
           scope: "@tool3"
-      - run: npm ci
-      - run: git pull origin master --tags
-      - run: npm publish
+      - run: |
+          npm ci
+          git pull origin master --tags
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GP_TOKEN}}
