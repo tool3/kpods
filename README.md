@@ -13,7 +13,7 @@
                                    
                                             k8s pods cli                   
 ```
-[![Build Status](https://travis-ci.org/tool3/kpods.svg?branch=master)](https://travis-ci.org/tool3/kpods)   
+[![Build Status](https://travis-ci.org/tool3/kpods.svg?branch=master)](https://travis-ci.org/tool3/kpods)   ![npm](https://img.shields.io/npm/dm/@tool3/kpods)   
 kpods is a small, frictionless kubernetes pod management utility that works with kubernetes-dashboard APIs.   
 no kubeconfig, minimal setup.
 
