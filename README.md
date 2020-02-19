@@ -25,10 +25,36 @@ once installed, it will be available globally as `kp` and `kpods`.
 # config
 `kp` expects you to have the following environment variables available:   
 - `KP_URL` - the k8s dashboard URL.   
-- `KP_TOKEN` - authorization bearer token.  
+- `KP_TOKEN` - authorization bearer token (without Bearer).  
 - `KP_ENV` - the default namespace.
   
 You can also run with `--url, -u | --env, -e | --token, -t` and provide overrides on demand.
 
 # usage
 `kp` or `kp --help` to see available commands and options.
+
+# multi cluster 
+given you have multiple clusters and hence multiple k8s dashboards, you can store env variables in files (`.properties` for example) and export them based on the current namespace you are working with, for example:   
+#### KP_DEV.properties
+```bash
+KP_URL="your k8s dashboard url"
+KP_ENV="dev" #assuming your namespace in dev cluster is also dev
+KP_TOKEN="your bearer token (without Bearer)"
+```
+#### KP_PROD.properties
+```bash
+KP_URL="your k8s dashboard url"
+KP_ENV="prod" #assuming your namespace in prod cluster is also prod
+KP_TOKEN="your bearer token (without Bearer)"
+```
+#### usage example
+using one of the `kp` configs (dev in this example), is as easy as:   
+```bash
+source KP_DEV.properties
+```
+or better yet:
+```bash
+. KP_DEV.properties
+```
+
+so essentially keeping 2 terminal tabs each for it's own `kp` config, or update them on the fly!
