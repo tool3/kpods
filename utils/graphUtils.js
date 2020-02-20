@@ -41,12 +41,12 @@ const createStatisticsCharts = (cumulativeMetrics, width, height) => {
 
     totalCpu.map(point => {
         cpuMetrics.push(point.y);
-        cpuTimeStamps.push(new Date(point.x).toLocaleTimeString());
+        cpuTimeStamps.push(new Date(point.x * 1000).toLocaleTimeString());
     });
 
     totalRam.map(point => {
         ramMetrics.push((point.y / 1000 / 1000).toFixed());
-        ramTimeStamps.push(new Date(point.x).toLocaleTimeString());
+        ramTimeStamps.push(new Date(point.x * 1000).toLocaleTimeString());
     });
 
 
