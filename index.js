@@ -23,19 +23,19 @@ yargs
         {
             name: { alias: 'n', type: 'string', desc: 'pod name', positional: true },
             label: { alias: 'l', type: 'string', desc: 'label to group by', default: 'subsystem' },
-            filter: { alias: 'f', type: 'string', desc: 'filter pods by name'  },
-            status: { alias: 's', type: 'string', desc: 'filter pods by status'  },
+            filter: { alias: 'f', type: 'string', desc: 'filter pods by name' },
+            status: { alias: 's', type: 'string', desc: 'filter pods by status' },
         }, async argv => {
             argv.name = argv._[1] || argv.name;
             if (argv.name) {
                 await getPod(argv, banner)
-            } else if(argv.filter) {
+            } else if (argv.filter) {
                 await getPodFilter(argv, banner);
             } else {
                 await getPods(argv, banner, argv.status)
             }
         })
-    .command(['logs <name>', 'l'], 'Get pod logs', {}, async argv => {
+    .command(['logs <name>', 'l'], 'Get pod logs', { watch: { alias: 'w', type: 'boolean', desc: 'continously fetch logs' }, interval: { alias: 'i', type: 'number', desc: 'interval in seconds for fetching logs', default: 3 } }, async argv => {
         return await getLogs(argv, banner);
     })
     .command(['exec <name>'], 'Exec pod', {}, async argv => {
