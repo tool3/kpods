@@ -2,9 +2,10 @@ const chalk = require('chalk');
 const Pie = require("cli-pie");
 const asciiChart = require("chart");
 const { colors } = require('../constants/colors');
+const Chartscii = require('chartscii');
 
 const createPie = (healthStatuses) => {
-    
+
     const pie = new Pie(8, [{ label: chalk.hex(colors['Running'])('Running'), value: healthStatuses.running, color: [119, 255, 141] }], {
         legend: true,
         no_ansi: false,
@@ -40,31 +41,33 @@ const createStatisticsCharts = (cumulativeMetrics, width, height) => {
     let ramMetrics = [], ramTimeStamps = [];
 
     totalCpu.map(point => {
-        cpuMetrics.push(point.y);
-        cpuTimeStamps.push(new Date(point.x * 1000).toLocaleTimeString());
+        const time = new Date(point.x * 1000).toLocaleTimeString();
+        cpuMetrics.push({ value: point.y, label: time });
+        cpuTimeStamps.push(time);
     });
 
     totalRam.map(point => {
-        ramMetrics.push((point.y / 1000 / 1000).toFixed());
-        ramTimeStamps.push(new Date(point.x * 1000).toLocaleTimeString());
+        const time = new Date(point.x * 1000).toLocaleTimeString();
+        ramMetrics.push({ value: Number((point.y / 1000 / 1000).toFixed()), label: time });
+        ramTimeStamps.push(time);
     });
 
 
-    const cpuChart = asciiChart(cpuMetrics, {
-        width: width,
-        height: height,
-        padding: 0,
-        pointChar: chalk.hex(colors['Running'])('█'),
-        negativePointChar: '░'
-    });
+    const cpuChart = new Chartscii(cpuMetrics, {
+        width: 500,
+        sort: true,
+        reverse: true,
+        color: 'green',
+        char: '■'
+    }).create();
 
-    const ramChart = asciiChart(ramMetrics, {
-        width: width,
-        height: height,
-        padding: 0,
-        pointChar: chalk.blueBright('█'),
-        negativePointChar: '░'
-    });
+    const ramChart = new Chartscii(ramMetrics, {
+        width: 500,
+        sort: true,
+        reverse: true,
+        color: 'blue',
+        char: '■'
+    }).create();
 
     return {
         ram: { chart: ramTimeStamps.length > 0 ? ramChart : "N/A", timestamps: ramTimeStamps }, cpu: { chart: cpuTimeStamps.length > 0 ? cpuChart : "N/A", timestamps: cpuTimeStamps }
@@ -76,7 +79,7 @@ const generateGraphTimes = (chart, times) => {
 }
 
 const displayTimeRange = (times) => {
-    return times.length > 0  ? `(${times[0]} to ${times[times.length - 1]})` : '';
+    return times.length > 0 ? `(${times[0]} to ${times[times.length - 1]})` : '';
 }
 
 module.exports = { createPie, createStatisticsCharts, generateGraphTimes, displayTimeRange }
