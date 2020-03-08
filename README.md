@@ -16,7 +16,7 @@
 [![Build Status](https://travis-ci.org/tool3/kpods.svg?branch=master)](https://travis-ci.org/tool3/kpods)   [![npm](https://img.shields.io/npm/dm/@tool3/kpods)](https://www.npmjs.com/package/@tool3/kpods)   
 kpods is a small, frictionless kubernetes pod management utility that works with kubernetes-dashboard APIs.   
 no kubeconfig, minimal setup.
- 
+  
 # install
 `npm install -g @tool3/kpods`
 
