@@ -19,8 +19,8 @@ jobs:
     needs: tag
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1.0.3
-      - uses: tool3/publisher@master
+      - uses: actions/checkout@v1
+      - uses: tool3/publisher@v1.0.3
         with:
           github_token: ${{ secrets.GP_TOKEN }}
           npm_token: ${{ secrets.NPM_TOKEN }}
