@@ -1,6 +1,6 @@
 {
   "name": "@tool3/kpods",
-  "version": "1.0.34",
+  "version": "1.0.35",
   "description": "k8s pods cli",
   "main": "index.js",
   "scripts": {
