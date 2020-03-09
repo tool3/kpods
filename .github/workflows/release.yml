@@ -25,6 +25,3 @@ jobs:
           github_token: ${{ secrets.GP_TOKEN }}
           npm_token: ${{ secrets.NPM_TOKEN }}
           scope: "@tool3"
-      - run: | 
-          npm ci
-          git pull origin master --tags
