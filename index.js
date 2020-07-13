@@ -17,6 +17,8 @@ yargs
             url: process.env.KP_URL,
             apiVersion: 'api/v1',
             token: process.env.KP_TOKEN,
+            env: process.env.KP_ENV,
+
 
         })
     .command(['get [name..]', 'g'], 'Get pods|s',
@@ -46,9 +48,9 @@ yargs
     .example('$0 get -s failed', 'get pods list with failed status')
     .example('$0 get [pod-name]', 'get a single pod specific info for [pod-name]')
     .example('$0 get -f views', 'get pods specific info filtered by name')
-    .option('env', { alias: 'e', type: 'string', default: process.env.KP_ENV || 'KP_ENV', desc: 'namespace to get pods', required: true })
-    .option('url', { alias: 'u', type: 'string', default: 'KP_URL', desc: 'k8s dashboard url', required: true })
-    .option('token', { alias: 't', type: 'string', default: 'KP_TOKEN', desc: 'bearer token', required: true })
+    .option('env', { alias: 'e', type: 'string', desc: 'namespace to get pods', required: true })
+    .option('url', { alias: 'u', type: 'string', desc: 'k8s dashboard url', required: true })
+    .option('token', { alias: 't', type: 'string', desc: 'bearer token', required: true })
     .demandCommand(1, '')
     .help()
     .wrap(72)
