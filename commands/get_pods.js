@@ -18,6 +18,7 @@ const restartByCount = (restarts, serviceColor) => {
     } else if (restarts > 5) {
         return colors['Error'];
     }
+    return serviceColor;
 }
 
 const getPods = async (argv, banner) => {
@@ -106,7 +107,7 @@ const getPods = async (argv, banner) => {
                 console.log(table.toString());
 
             } else {
-                throw `No ${argv.status} pods in ${argv.env}`    
+                throw `No ${argv.status} pods in ${argv.env}`
             }
 
         } else {
@@ -115,6 +116,7 @@ const getPods = async (argv, banner) => {
 
     } catch (e) {
         spinner.fail();
+        console.log(e);
         const err = e.errno || e;
         console.error(chalk.redBright(err));
     }
