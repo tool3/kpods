@@ -82,7 +82,7 @@ const getPods = async (argv, banner) => {
                 const healthStatuses = data.status;
 
                 // charts
-                const { cpu, ram } = createStatisticsCharts(data.cumulativeMetrics, 38, 25);
+                const { cpu, ram } = createStatisticsCharts(data.cumulativeMetrics, 38, 20);
 
                 // total pod health pie
                 const pie = createPie(healthStatuses);

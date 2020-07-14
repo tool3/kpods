@@ -52,7 +52,7 @@ const createStatisticsCharts = (cumulativeMetrics, width, height) => {
 
     const cpuChart = asciiChart(cpuMetrics, {
         width: width,
-        height: 20,
+        height: height,
         padding: 0,
         pointChar: chalk.hex(colors['Running'])('█'),
         negativePointChar: '░'
@@ -60,7 +60,7 @@ const createStatisticsCharts = (cumulativeMetrics, width, height) => {
 
     const ramChart = asciiChart(ramMetrics, {
         width: width,
-        height: 20,
+        height: height,
         padding: 0,
         pointChar: chalk.blueBright('█'),
         negativePointChar: '░'
