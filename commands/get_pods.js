@@ -86,7 +86,7 @@ const getPods = async (argv, banner) => {
 
                 // total pod health pie
                 const pie = createPie(healthStatuses);
-                const groupPie = new Pie(5, [], {
+                const groupPie = new Pie(4, [], {
                     legend: true,
                     no_ansi: false,
                     flat: true,

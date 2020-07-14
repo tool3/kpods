@@ -4,8 +4,8 @@ const asciiChart = require("chart");
 const { colors } = require('../constants/colors');
 
 const createPie = (healthStatuses) => {
-    
-    const pie = new Pie(8, [{ label: chalk.hex(colors['Running'])('Running'), value: healthStatuses.running, color: [119, 255, 141] }], {
+
+    const pie = new Pie(4, [{ label: chalk.hex(colors['Running'])('Running'), value: healthStatuses.running, color: [119, 255, 141] }], {
         legend: true,
         no_ansi: false,
         display_total: true,
@@ -52,7 +52,7 @@ const createStatisticsCharts = (cumulativeMetrics, width, height) => {
 
     const cpuChart = asciiChart(cpuMetrics, {
         width: width,
-        height: height,
+        height: 20,
         padding: 0,
         pointChar: chalk.hex(colors['Running'])('█'),
         negativePointChar: '░'
@@ -60,7 +60,7 @@ const createStatisticsCharts = (cumulativeMetrics, width, height) => {
 
     const ramChart = asciiChart(ramMetrics, {
         width: width,
-        height: height,
+        height: 20,
         padding: 0,
         pointChar: chalk.blueBright('█'),
         negativePointChar: '░'
@@ -76,7 +76,7 @@ const generateGraphTimes = (chart, times) => {
 }
 
 const displayTimeRange = (times) => {
-    return times.length > 0  ? `(${times[0]} to ${times[times.length - 1]})` : '';
+    return times.length > 0 ? `(${times[0]} to ${times[times.length - 1]})` : '';
 }
 
 module.exports = { createPie, createStatisticsCharts, generateGraphTimes, displayTimeRange }
