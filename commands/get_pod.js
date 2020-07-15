@@ -40,7 +40,7 @@ const getPod = async (argv, banner) => {
         )
 
         // metrics
-        const { cpu, ram } = createStatisticsCharts(data.metrics, 35, 15);
+        const { cpu, ram } = createStatisticsCharts(data.metrics, 35, 20);
 
         // env 
         const envVars = env.map(item => `${chalk.bold(item.name)}: ${item.value}`).join('\n');
