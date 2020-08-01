@@ -37,15 +37,15 @@ You can also run with `--url, -u | --env, -e | --token, -t` and provide override
 given you have multiple clusters and hence multiple k8s dashboards, you can store env variables in files (`.properties` for example) and export them based on the current namespace you are working with, for example:   
 #### KP_DEV.properties
 ```bash
-KP_URL="your k8s dashboard url"
-KP_ENV="dev" #assuming your namespace in dev cluster is also dev
-KP_TOKEN="your bearer token (without Bearer)"
+export KP_URL="your k8s dashboard url"
+export KP_ENV="dev" #assuming your namespace in dev cluster is also dev
+export KP_TOKEN="your bearer token (without Bearer)"
 ```
 #### KP_PROD.properties
 ```bash
-KP_URL="your k8s dashboard url"
-KP_ENV="prod" #assuming your namespace in prod cluster is also prod
-KP_TOKEN="your bearer token (without Bearer)"
+export KP_URL="your k8s dashboard url"
+export KP_ENV="prod" #assuming your namespace in prod cluster is also prod
+export KP_TOKEN="your bearer token (without Bearer)"
 ```
 #### usage example
 using one of the `kp` configs (dev in this example), is as easy as:   
