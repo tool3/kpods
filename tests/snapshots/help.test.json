@@ -1,0 +1,25 @@
+{
+  "help": [
+    "index.js <command>",
+    "",
+    "Commands:",
+    "  index.js get [name..]  Get pods|s                         [aliases: g]",
+    "  index.js logs <name>   Get pod logs                       [aliases: l]",
+    "  index.js exec <name>   Exec pod",
+    "",
+    "Options:",
+    "  --version    Show version number                             [boolean]",
+    "  --env, -e    namespace to get pods                 [string] [required]",
+    "  --url, -u    k8s dashboard url                     [string] [required]",
+    "  --token, -t  bearer token                          [string] [required]",
+    "  --help       Show help                                       [boolean]",
+    "",
+    "Examples:",
+    "  index.js get             get pods list in env",
+    "  index.js get -e dev      get pods list in dev namespace",
+    "  index.js get -s failed   get pods list with failed status",
+    "  index.js get [pod-name]  get a single pod specific info for [pod-name]",
+    "  index.js get -f views    get pods specific info filtered by name",
+    ""
+  ]
+}
